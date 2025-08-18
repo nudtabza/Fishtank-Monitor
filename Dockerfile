@@ -1,7 +1,5 @@
 FROM php:8.2-fpm-alpine
-
 WORKDIR /var/www/html
-
 RUN apk update && apk add --no-cache \
     nginx \
     postgresql-client \
@@ -28,15 +26,11 @@ RUN apk update && apk add --no-cache \
     php82-tokenizer \
     php82-pdo_pgsql \
     php82-pdo_sqlite
-
 COPY . .
-
+COPY nginx.conf /etc/nginx/nginx.conf
 RUN chown -R www-data:www-data /var/www/html
 RUN chmod -R 755 /var/www/html
-
+EXPOSE 8080
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-
 RUN chmod +x /usr/local/bin/entrypoint.sh
-
-CMD ["/usr/local/bin/entrypoint.sh"]
+CMD ["entrypoint.sh"]
