@@ -32,8 +32,8 @@ RUN apk update && apk add --no-cache \
     php82-pdo_pgsql \
     php82-pdo_sqlite
 
-# คัดลอกไฟล์การตั้งค่า Nginx ไปยังตำแหน่งที่ถูกต้อง
-COPY nginx.conf /etc/nginx/http.d/default.conf
+# *** แก้ไข: คัดลอกไฟล์การตั้งค่า Nginx ไปยังโฟลเดอร์ 'conf.d' ที่ถูกต้อง ***
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # คัดลอกไฟล์โปรเจกต์ของคุณ
 COPY . .
