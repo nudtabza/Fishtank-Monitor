@@ -1,10 +1,5 @@
-# ใช้ PHP-FPM image เป็น base
 FROM php:8.2-fpm-alpine
-
-# ตั้งค่า Working Directory ใน Container
 WORKDIR /var/www/html
-
-# อัปเดตและติดตั้ง Nginx พร้อมส่วนขยาย PHP ที่จำเป็น
 RUN apk update && apk add --no-cache \
     nginx \
     postgresql-client \
@@ -31,13 +26,11 @@ RUN apk update && apk add --no-cache \
     php82-tokenizer \
     php82-pdo_pgsql \
     php82-pdo_sqlite
-
-# *** แก้ไข: คัดลอกไฟล์การตั้งค่า Nginx ไปยังโฟลเดอร์ 'conf.d' ที่ถูกต้อง ***
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-# คัดลอกไฟล์โปรเจกต์ของคุณ
 COPY . .
-
-# ตั้งค่าสิทธิ์ไฟล์และโฟลเดอร์ให้ถูกต้อง
+COPY nginx.conf /etc/nginx/nginx.conf
 RUN chown -R www-data:www-data /var/www/html
 RUN chmod -R 755 /var/www/html
+EXPOSE 8080
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+CMD ["entrypoint.sh"]
