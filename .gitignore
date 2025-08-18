@@ -1,0 +1,11 @@
+/vendor/
+/composer.lock
+/composer.phar
+/.env
+*.sqlite
+*.db
+.DS_Store
+Thumbs.db
+config.inc.php
+db_conn.php
+*.log
