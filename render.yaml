@@ -3,7 +3,7 @@ services:
     name: fishtank-monitor
     env: php
     buildCommand: ""
-    startCommand: "php-fpm -D && nginx -g 'daemon off;'"
+    startCommand: "php-fpm && nginx -g 'daemon off;'"
     envVars:
       - key: DATABASE_URL
         fromDatabase:
