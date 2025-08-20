@@ -1,43 +1,30 @@
+# ใช้ PHP-FPM image เป็น base
 FROM php:8.2-fpm-alpine
+
+# ตั้งค่า Working Directory ใน Container
 WORKDIR /var/www/html
 
-# ติดตั้ง Nginx และส่วนขยาย PHP ที่จำเป็น
-RUN apk update && apk add --no-cache \
-    nginx \
-    postgresql-client \
-    php82-fpm \
-    php82-session \
-    php82-json \
-    php82-mbstring \
-    php82-openssl \
-    php82-curl \
-    php82-dom \
-    php82-exif \
-    php82-fileinfo \
-    php82-iconv \
-    php82-gd \
-    php82-xml \
-    php82-xmlreader \
-    php82-simplexml \
-    php82-xmlwriter \
-    php82-zip \
-    php82-zlib \
-    php82-ctype \
-    php82-bcmath \
-    php82-intl \
-    php82-tokenizer \
-    php82-pdo_pgsql \
-    php82-pdo_sqlite
+# ติดตั้งส่วนขยาย PHP ที่จำเป็นสำหรับ MySQL (mysqli และ pdo_mysql)
+RUN docker-php-ext-install mysqli pdo pdo_mysql
 
-# สร้างไดเรกทอรีสำหรับ PHP-FPM socket และตั้งค่าสิทธิ์การเข้าถึง
-RUN mkdir /tmp/php-fpm-socket && chmod 777 /tmp/php-fpm-socket
+# ติดตั้ง Nginx
+RUN apk add --no-cache nginx
 
+# ลบ default Nginx config
+RUN rm /etc/nginx/conf.d/default.conf
+
+# คัดลอก Nginx config ของเราเอง (จะสร้างในขั้นตอนถัดไป)
 COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# คัดลอกไฟล์โปรเจกต์ทั้งหมดของคุณไปยัง Container
 COPY . .
+
+# ตั้งค่าสิทธิ์ไฟล์และโฟลเดอร์
 RUN chown -R www-data:www-data /var/www/html
 RUN chmod -R 755 /var/www/html
-EXPOSE 8080
-COPY entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod +x /usr/local/bin/entrypoint.sh
 
-CMD ["/usr/local/bin/entrypoint.sh"]
+# Expose port ที่ Nginx จะฟัง
+EXPOSE 80
+
+# คำสั่งที่จะรันเมื่อ Container เริ่มต้น (รัน Nginx และ PHP-FPM)
+CMD ["sh", "-c", "php-fpm && nginx -g 'daemon off;'"]

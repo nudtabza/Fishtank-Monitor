@@ -1,14 +1,19 @@
 <?php
 session_start();
+// ตรวจสอบว่าผู้ใช้ล็อกอินอยู่หรือไม่
 if (!isset($_SESSION['user_id'])) {
-    header('Location: index.php');
+    header('Location: index.php'); // ถ้ายังไม่ได้ล็อกอิน ให้ redirect ไปหน้า Login
     exit();
 }
 
+// Include database connection
 require_once 'db_conn.php';
 
 $user_id = $_SESSION['user_id'];
 $username = $_SESSION['username'];
+
+// ลบบรรทัดนี้: ไม่จำเป็นต้องดึง line_notify_token แล้ว
+// $line_notify_token = ''; 
 
 $temp_min = '';
 $temp_max = '';
@@ -16,23 +21,23 @@ $ph_min = '';
 $ph_max = '';
 $turbidity_max = '';
 
-try {
-    $stmt = $conn->prepare("SELECT temp_min, temp_max, ph_min, ph_max, turbidity_max FROM user_thresholds WHERE user_id = ?");
-    $stmt->execute([$user_id]);
-    $result = $stmt->fetch(PDO::FETCH_ASSOC);
-    
-    if ($result) {
-        $temp_min = $result['temp_min'];
-        $temp_max = $result['temp_max'];
-        $ph_min = $result['ph_min'];
-        $ph_max = $result['ph_max'];
-        $turbidity_max = $result['turbidity_max'];
-    }
-} catch (Exception $e) {
-    error_log("Error in settings.php: " . $e->getMessage());
-}
+// ลบโค้ดส่วนนี้ออกไป: ไม่ต้องดึง line_notify_token จากตาราง users แล้ว
+// $stmt = $conn->prepare("SELECT line_notify_token FROM users WHERE id = ?");
+// $stmt->bind_param("i", $user_id);
+// $stmt->execute();
+// $stmt->bind_result($line_notify_token);
+// $stmt->fetch();
+// $stmt->close();
 
-$conn = null;
+// ดึงข้อมูลการตั้งค่าเกณฑ์ปัจจุบันของผู้ใช้ (โค้ดนี้ยังคงเดิม)
+$stmt = $conn->prepare("SELECT temp_min, temp_max, ph_min, ph_max, turbidity_max FROM user_thresholds WHERE user_id = ?");
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$stmt->bind_result($temp_min, $temp_max, $ph_min, $ph_max, $turbidity_max);
+$stmt->fetch();
+$stmt->close();
+
+$conn->close(); // ปิดการเชื่อมต่อหลังจากดึงข้อมูลเสร็จ
 ?>
 <!DOCTYPE html>
 <html lang="th">
@@ -45,10 +50,10 @@ $conn = null;
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="bg-light-blue">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark-blue shadow-lg">
-        <div class="container">
-            <a class="navbar-brand" href="#">
-                <i class="fas fa-water me-2"></i> ระบบตรวจสอบคุณภาพน้ำตู้ปลา
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark-blue shadow-sm">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="dashboard.php">
+                <i class="fas fa-fish me-2"></i> Aquarium Monitor
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -56,63 +61,70 @@ $conn = null;
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="dashboard.php">
-                            <i class="fas fa-tachometer-alt me-1"></i> Dashboard
-                        </a>
+                        <a class="nav-link" href="dashboard.php"><i class="fas fa-chart-line me-1"></i> Dashboard</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="settings.php">
-                            <i class="fas fa-cog me-1"></i> ตั้งค่า
-                        </a>
+                        <a class="nav-link active" aria-current="page" href="settings.php"><i class="fas fa-cogs me-1"></i> ตั้งค่า</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="logout.php">
-                            <i class="fas fa-sign-out-alt me-1"></i> ออกจากระบบ
-                        </a>
+                        <a class="nav-link" href="logout.php"><i class="fas fa-sign-out-alt me-1"></i> ออกจากระบบ</a>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
-    <div class="container py-5">
+    <div class="container py-4">
+        <div class="row">
+            <div class="col-12 text-center mb-4">
+                <h1 class="display-4 text-blue"><i class="fas fa-cogs me-2"></i> ตั้งค่าระบบ</h1>
+                <p class="lead text-muted">กำหนดค่าเกณฑ์การแจ้งเตือน</p> </div>
+        </div>
+
         <div class="row justify-content-center">
             <div class="col-md-8 col-lg-7">
-                <div class="card shadow-lg border-0 rounded-lg">
-                    <div class="card-header bg-gradient-header p-4">
-                        <h3 class="text-center font-weight-light my-4 text-white">
-                            <i class="fas fa-sliders-h me-2"></i> ตั้งค่าระบบ
-                        </h3>
+                <div class="card shadow-lg border-0 rounded-lg mb-4">
+                    <div class="card-header bg-gradient-chart-header p-4">
+                        <h4 class="mb-0 text-white"><i class="fas fa-sliders-h me-2"></i> เกณฑ์การแจ้งเตือน</h4>
                     </div>
                     <div class="card-body p-4">
                         <form id="settingsForm">
-                            <div class="alert d-none" role="alert" id="settingsMessage"></div>
-                            <h5 class="mb-3 text-secondary">
-                                <i class="fas fa-chart-line me-2"></i> การตั้งค่าเกณฑ์คุณภาพน้ำ
-                            </h5>
-                            <div class="row g-3">
+                            <input type="hidden" name="user_id" value="<?php echo $_SESSION['user_id']; ?>">
+
+                            <h5><i class="fas fa-thermometer-half me-2 text-info"></i> อุณหภูมิ (°C)</h5>
+                            <div class="row mb-3">
                                 <div class="col-md-6">
-                                    <label for="temp_min" class="form-label">อุณหภูมิ (ขั้นต่ำ)</label>
-                                    <input type="number" class="form-control" id="temp_min" name="temp_min" placeholder="เช่น 24" step="0.1" value="<?= htmlspecialchars($temp_min) ?>">
+                                    <label for="tempMin" class="form-label">ค่าต่ำสุดที่ยอมรับได้</label>
+                                    <input type="number" step="0.1" class="form-control" id="tempMin" name="temp_min" value="<?php echo htmlspecialchars($temp_min); ?>" placeholder="เช่น 25.0">
                                 </div>
                                 <div class="col-md-6">
-                                    <label for="temp_max" class="form-label">อุณหภูมิ (สูงสุด)</label>
-                                    <input type="number" class="form-control" id="temp_max" name="temp_max" placeholder="เช่น 28" step="0.1" value="<?= htmlspecialchars($temp_max) ?>">
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="ph_min" class="form-label">ค่า pH (ขั้นต่ำ)</label>
-                                    <input type="number" class="form-control" id="ph_min" name="ph_min" placeholder="เช่น 6.5" step="0.1" value="<?= htmlspecialchars($ph_min) ?>">
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="ph_max" class="form-label">ค่า pH (สูงสุด)</label>
-                                    <input type="number" class="form-control" id="ph_max" name="ph_max" placeholder="เช่น 7.5" step="0.1" value="<?= htmlspecialchars($ph_max) ?>">
-                                </div>
-                                <div class="col-12">
-                                    <label for="turbidity_max" class="form-label">ความขุ่น (สูงสุด)</label>
-                                    <input type="number" class="form-control" id="turbidity_max" name="turbidity_max" placeholder="เช่น 50" step="0.1" value="<?= htmlspecialchars($turbidity_max) ?>">
+                                    <label for="tempMax" class="form-label">ค่าสูงสุดที่ยอมรับได้</label>
+                                    <input type="number" step="0.1" class="form-control" id="tempMax" name="temp_max" value="<?php echo htmlspecialchars($temp_max); ?>" placeholder="เช่น 28.0">
                                 </div>
                             </div>
+
+                            <h5 class="mt-4"><i class="fas fa-flask me-2 text-primary"></i> ค่า pH</h5>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="phMin" class="form-label">ค่าต่ำสุดที่ยอมรับได้</label>
+                                    <input type="number" step="0.01" class="form-control" id="phMin" name="ph_min" value="<?php echo htmlspecialchars($ph_min); ?>" placeholder="เช่น 6.5">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="phMax" class="form-label">ค่าสูงสุดที่ยอมรับได้</label>
+                                    <input type="number" step="0.01" class="form-control" id="phMax" name="ph_max" value="<?php echo htmlspecialchars($ph_max); ?>" placeholder="เช่น 7.5">
+                                </div>
+                            </div>
+
+                            <h5 class="mt-4"><i class="fas fa-cloud me-2 text-secondary"></i> ความขุ่น (%)</h5>
+                            <div class="mb-3">
+                                <label for="turbidityMax" class="form-label">ค่าสูงสุดที่ยอมรับได้</label>
+                                <input type="number" step="0.1" class="form-control" id="turbidityMax" name="turbidity_max" value="<?php echo htmlspecialchars($turbidity_max); ?>" placeholder="เช่น 20.0">
+                                <div class="form-text">เมื่อค่าความขุ่นเกินกว่านี้ จะมีการแจ้งเตือน</div>
+                            </div>
+
+                            <div id="settingsMessage" class="alert d-none mt-4" role="alert"></div>
+
                             <div class="d-grid mt-4">
-                                <button type="submit" class="btn btn-primary btn-block">บันทึกการตั้งค่า</button>
+                                <button type="submit" class="btn btn-primary btn-lg"><i class="fas fa-save me-2"></i> บันทึกการตั้งค่า</button>
                             </div>
                         </form>
                     </div>
@@ -120,42 +132,46 @@ $conn = null;
             </div>
         </div>
     </div>
+
+    <footer class="footer mt-auto py-3 bg-dark-blue text-white-50 text-center">
+        <div class="container">
+            <span>&copy; 2025 Aquarium Monitor. Powered by ESP32 & PHP.</span>
+        </div>
+    </footer>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const settingsForm = document.getElementById('settingsForm');
-            settingsForm.addEventListener('submit', async function(event) {
-                event.preventDefault();
-                const formData = new FormData(this);
-                const messageDiv = document.getElementById('settingsMessage');
-                messageDiv.classList.add('d-none');
+        document.getElementById('settingsForm').addEventListener('submit', async function(event) {
+            event.preventDefault(); // หยุดการ submit แบบปกติ
+            const formData = new FormData(this);
+            const messageDiv = document.getElementById('settingsMessage');
+            messageDiv.classList.add('d-none'); // ซ่อนข้อความเก่า
 
-                try {
-                    const response = await fetch('api/save_settings.php', {
-                        method: 'POST',
-                        body: formData
-                    });
-                    const data = await response.json();
+            try {
+                const response = await fetch('api/save_settings.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
 
-                    if (data.status === 'success') {
-                        messageDiv.textContent = data.message;
-                        messageDiv.classList.remove('alert-danger');
-                        messageDiv.classList.add('alert-success');
-                        messageDiv.classList.remove('d-none');
-                    } else {
-                        messageDiv.textContent = data.message;
-                        messageDiv.classList.remove('alert-success');
-                        messageDiv.classList.add('alert-danger');
-                        messageDiv.classList.remove('d-none');
-                    }
-                } catch (error) {
-                    console.error('Error:', error);
-                    messageDiv.textContent = 'เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์';
+                if (data.status === 'success') {
+                    messageDiv.textContent = data.message;
+                    messageDiv.classList.remove('alert-danger');
+                    messageDiv.classList.add('alert-success');
+                    messageDiv.classList.remove('d-none');
+                } else {
+                    messageDiv.textContent = data.message;
                     messageDiv.classList.remove('alert-success');
                     messageDiv.classList.add('alert-danger');
                     messageDiv.classList.remove('d-none');
                 }
-            });
+            } catch (error) {
+                console.error('Error:', error);
+                messageDiv.textContent = 'เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์';
+                messageDiv.classList.remove('alert-success');
+                messageDiv.classList.add('alert-danger');
+                messageDiv.classList.remove('d-none');
+            }
         });
     </script>
 </body>
