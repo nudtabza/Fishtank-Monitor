@@ -1,27 +1,29 @@
 <?php
-header("Access-Control-Allow-Origin: *");
-header("Content-Type: application/json; charset=utf-8");
+// api/get_data.php
 
+session_start(); // เริ่มต้น session เพื่อใช้ตรวจสอบการ Login
+header('Content-Type: application/json');
+
+// ตรวจสอบการ Login (แนะนำให้เปิดใช้งานใน Production เพื่อความปลอดภัย)
+// if (!isset($_SESSION['user_id'])) {
+//     echo json_encode(["status" => "error", "message" => "Unauthorized access."]);
+//     exit();
+// }
+
+// Include the database connection file
+// เส้นทาง: '../db_conn.php' หมายถึง ถอยออกจากโฟลเดอร์ 'api' ไปหนึ่งระดับ
 require_once '../db_conn.php';
 
-$response = ["status" => "error", "message" => "An unknown error occurred."];
+// Fetch latest sensor data
+$sql = "SELECT temperature, ph_value, turbidity, timestamp FROM sensor_data ORDER BY timestamp DESC LIMIT 1";
+$result = $conn->query($sql);
 
-try {
-    $sql = "SELECT temperature, ph_value, turbidity, timestamp FROM sensor_data ORDER BY id DESC LIMIT 1";
-    $stmt = $conn->prepare($sql);
-    $stmt->execute();
-    $data = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    if ($data) {
-        $response = ["status" => "success", "data" => $data];
-    } else {
-        $response = ["status" => "success", "data" => (object)[]];
-    }
-} catch (PDOException $e) {
-    http_response_code(500);
-    $response = ["status" => "error", "message" => "Database error: " . $e->getMessage()];
+if ($result->num_rows > 0) {
+    $row = $result->fetch_assoc();
+    echo json_encode(["status" => "success", "data" => $row]);
+} else {
+    echo json_encode(["status" => "error", "message" => "No data found"]);
 }
 
-echo json_encode($response);
-$conn = null;
+$conn->close(); // ปิดการเชื่อมต่อฐานข้อมูล
 ?>
