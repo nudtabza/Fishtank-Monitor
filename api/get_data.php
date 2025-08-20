@@ -5,16 +5,17 @@ session_start(); // เริ่มต้น session เพื่อใช้ต
 header('Content-Type: application/json');
 
 // ตรวจสอบการ Login (แนะนำให้เปิดใช้งานใน Production เพื่อความปลอดภัย)
-// if (!isset($_SESSION['user_id'])) {
-//     echo json_encode(["status" => "error", "message" => "Unauthorized access."]);
-//     exit();
-// }
+if (!isset($_SESSION['user_id'])) {
+    echo json_encode(["status" => "error", "message" => "Unauthorized access."]);
+    exit();
+}
 
 // Include the database connection file
 // เส้นทาง: '../db_conn.php' หมายถึง ถอยออกจากโฟลเดอร์ 'api' ไปหนึ่งระดับ
 require_once '../db_conn.php';
 
 // Fetch latest sensor data
+// Note: mysqli syntax is still used here. It's recommended to change it to PDO as well for consistency.
 $sql = "SELECT temperature, ph_value, turbidity, timestamp FROM sensor_data ORDER BY timestamp DESC LIMIT 1";
 $result = $conn->query($sql);
 
