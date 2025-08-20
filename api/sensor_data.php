@@ -1,13 +1,8 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
 
-// Database connection details
-// You must fill these in with your actual database credentials
-$servername = "sql306.infinityfree.com";
-$port = 3306;
-$username = "if0_39512375";
-$password = "NudNud123";
-$dbname = "if0_39512375_fishtank_monitor";
+// Include the centralized database connection file
+require_once '../db_conn.php';
 
 // Check if all required GET parameters are present
 if (!isset($_GET['temperature']) || !isset($_GET['ph_value']) || !isset($_GET['turbidity'])) {
@@ -26,27 +21,14 @@ if ($temperature === false || $ph_value === false || $turbidity === false) {
     exit();
 }
 
-try {
-    // Create a PDO connection with the port included
-    $conn = new PDO("mysql:host=$servername;port=$port;dbname=$dbname;charset=utf8mb4", $username, $password);
-    // Set the PDO error mode to exception
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-    // Prepare and execute the SQL statement to insert data
-    $stmt = $conn->prepare("INSERT INTO sensor_data (temperature, ph_value, turbidity) VALUES (:temperature, :ph_value, :turbidity)");
-    $stmt->bindParam(':temperature', $temperature);
-    $stmt->bindParam(':ph_value', $ph_value);
-    $stmt->bindParam(':turbidity', $turbidity);
-    $stmt->execute();
+// Use the existing PDO connection from db_conn.php
+// Prepare and execute the SQL statement to insert data
+$stmt = $conn->prepare("INSERT INTO sensor_data (temperature, ph_value, turbidity) VALUES (:temperature, :ph_value, :turbidity)");
+$stmt->bindParam(':temperature', $temperature);
+$stmt->bindParam(':ph_value', $ph_value);
+$stmt->bindParam(':turbidity', $turbidity);
+$stmt->execute();
     
-    // Return a JSON success response
-    echo json_encode(["status" => "success", "message" => "Data inserted successfully"]);
-
-} catch (PDOException $e) {
-    // Handle database errors
-    echo json_encode(["status" => "error", "message" => "Database error: " . $e->getMessage()]);
-}
-
-// Close the connection
-$conn = null;
+// Return a JSON success response
+echo json_encode(["status" => "success", "message" => "Data inserted successfully"]);
 ?>
