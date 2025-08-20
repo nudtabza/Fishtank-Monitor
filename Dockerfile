@@ -13,9 +13,8 @@ WORKDIR /var/www/html
 # คัดลอกไฟล์โปรเจกต์ทั้งหมดของคุณไปยัง Container
 COPY . .
 
-# คัดลอก Nginx config ของเราเองไปยังโฟลเดอร์ conf.d ที่ถูกต้อง
-# Nginx จะอ่านไฟล์ .conf ทั้งหมดในโฟลเดอร์นี้โดยอัตโนมัติ
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# คัดลอก Nginx config ฉบับสมบูรณ์ไปทับไฟล์หลัก
+COPY nginx.conf /etc/nginx/nginx.conf
 
 # คัดลอกไฟล์ PHP-FPM config (www.conf)
 COPY www.conf /etc/php/8.2/fpm/pool.d/www.conf
