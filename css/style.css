@@ -1,0 +1,129 @@
+/* Custom CSS for Aquarium Monitor */
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f2f5; /* Light greyish blue */
+}
+
+/* Background Colors */
+.bg-light-blue {
+    background-color: #e0f2f7; /* Lighter blue for body */
+}
+
+.bg-dark-blue {
+    background-color: #007bff; /* Darker blue for navbar/footer */
+}
+
+/* Gradients for Card Headers */
+.bg-gradient-header {
+    background: linear-gradient(135deg, #007bff, #0056b3); /* Blue gradient */
+    color: white;
+}
+
+.bg-gradient-chart-header {
+    background: linear-gradient(45deg, #28a745, #218838); /* Green gradient for charts */
+    color: white;
+}
+
+.bg-gradient-alert-header {
+    background: linear-gradient(45deg, #dc3545, #c82333); /* Red gradient for alerts */
+    color: white;
+}
+
+/* Sensor Cards */
+.sensor-card {
+    border-radius: 15px !important;
+    overflow: hidden; /* Ensure border-radius applies to bg */
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.sensor-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 1rem 3rem rgba(0,0,0,.175)!important;
+}
+
+.sensor-card .card-body {
+    padding: 2.5rem !important;
+}
+
+.sensor-card .display-3 {
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+/* Specific sensor card colors */
+.bg-temp {
+    background: linear-gradient(to right, #fd7e14, #ffc107); /* Orange-Yellow */
+}
+
+.bg-ph {
+    background: linear-gradient(to right, #6f42c1, #007bff); /* Purple-Blue */
+}
+
+.bg-turbidity {
+    background: linear-gradient(to right, #6c757d, #343a40); /* Grey-DarkGrey */
+}
+
+/* General Card Styling */
+.card {
+    border-radius: 10px;
+}
+
+.card-header {
+    border-top-left-radius: 10px !important;
+    border-top-right-radius: 10px !important;
+    padding: 1rem 1.25rem;
+}
+
+.card-title {
+    font-weight: 600;
+}
+
+/* Text Colors */
+.text-blue {
+    color: #007bff;
+}
+
+/* Navigation */
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+.navbar-nav .nav-link {
+    font-weight: 500;
+    margin-left: 1rem;
+}
+
+.navbar-nav .nav-link.active {
+    border-bottom: 2px solid white;
+}
+
+/* Form Styling in index.php */
+.card-body .nav-pills .nav-link {
+    background-color: #e9ecef;
+    color: #495057;
+    font-weight: 600;
+    border-radius: .5rem;
+    padding: 0.75rem 1.25rem;
+}
+
+.card-body .nav-pills .nav-link.active {
+    background-color: #007bff;
+    color: white;
+}
+
+.input-group-text {
+    background-color: #e9ecef;
+    border-right: none;
+}
+
+.form-control {
+    border-left: none;
+}
+
+/* Footer */
+.footer {
+    background-color: #0056b3; /* A slightly darker blue for footer */
+    color: rgba(255,255,255,.6);
+}
