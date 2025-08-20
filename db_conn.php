@@ -1,6 +1,6 @@
 <?php
-// กำหนดข้อมูลการเชื่อมต่อฐานข้อมูลตามภาพที่ให้มา
-$host = "dpg-d2gb4fvdiees73dashs0-a.oregon-postgres.render.com";
+// กำหนดข้อมูลการเชื่อมต่อฐานข้อมูลตามรูปภาพที่ให้มา
+$host = "dpg-d2gb4fvdiees73dashs0.oregon-postgres.render.com"; // แก้ไขตามในรูป
 $port = "5432";
 $dbname = "fishtank_monitor";
 $user = "nudtabza";
