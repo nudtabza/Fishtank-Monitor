@@ -29,4 +29,5 @@ EXPOSE 80
 
 # คำสั่งที่จะรันเมื่อ Container เริ่มต้น (รัน Nginx และ PHP-FPM)
 # เพิ่ม -c /etc/nginx/nginx.conf เพื่อให้ Nginx ใช้ config ที่เรากำหนด
-CMD php-fpm -F && nginx -c /etc/nginx/nginx.conf -g "daemon off;"
+CMD sh -c "php-fpm -D && nginx -g 'daemon off;'"
+
