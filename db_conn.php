@@ -1,18 +1,25 @@
 <?php
-$servername = "dpg-d2gb4fvdiees73dashs0-a"; // Hostname ที่ได้จาก Railway
-$port = 5432; // Port ที่ได้จาก Railway
-$username = "nudtabza"; // Username ที่ได้จาก Railway
-$password = "2gR0SGTsc1hORz1KZNCRulU7J93IVDSZ"; // รหัสผ่านจาก Railway (MYSQL_ROOT_PASSWORD)
-$dbname = "fishtank_monitor"; // ชื่อฐานข้อมูลบน Railway
 
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname, $port); // เพิ่ม $port เข้าไปใน parameter สุดท้าย
+$host = "dpg-d2gb4fvdiees73dashs0-a.oregon-postgres.render.com"; // Hostname จาก Render
+$port = "5432"; // Port จาก Render
+$dbname = "fishtank_monitor"; // ชื่อฐานข้อมูล
+$user = "nudtabza"; // Username
+$password = "2gR0SGTsc1hORz1KZNCRulU7J93IVDSZ"; // รหัสผ่านที่ถูกต้อง
 
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+// สร้าง Connection String
+$conn_string = "host=$host port=$port dbname=$dbname user=$user password=$password";
+
+// เชื่อมต่อฐานข้อมูล
+$conn = pg_connect($conn_string);
+
+// ตรวจสอบการเชื่อมต่อ
+if (!$conn) {
+    die("Connection failed: " . pg_last_error());
+} else {
+    echo "Connected successfully to PostgreSQL database.";
 }
-// Set character set to UTF-8
-$conn->set_charset("utf8mb4");
+
+// ปิดการเชื่อมต่อเมื่อใช้งานเสร็จ
+// pg_close($conn);
 
 ?>
