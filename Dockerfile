@@ -11,7 +11,7 @@ RUN docker-php-ext-install mysqli pdo pdo_mysql
 RUN apk add --no-cache nginx
 
 # ลบ default Nginx config
-RUN rm /etc/nginx/conf.d/default.conf
+RUN rm -f /etc/nginx/conf.d/default.conf
 
 # คัดลอก Nginx config ของเราเอง (จะสร้างในขั้นตอนถัดไป)
 COPY nginx.conf /etc/nginx/conf.d/default.conf
@@ -27,4 +27,5 @@ RUN chmod -R 755 /var/www/html
 EXPOSE 80
 
 # คำสั่งที่จะรันเมื่อ Container เริ่มต้น (รัน Nginx และ PHP-FPM)
+
 CMD ["sh", "-c", "php-fpm && nginx -g 'daemon off;'"]
