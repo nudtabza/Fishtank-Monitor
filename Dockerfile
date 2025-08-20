@@ -13,8 +13,11 @@ WORKDIR /var/www/html
 # คัดลอกไฟล์โปรเจกต์ทั้งหมดของคุณไปยัง Container
 COPY . .
 
-# คัดลอกไฟล์ Nginx config ของเราเอง
-COPY nginx.conf /etc/nginx/nginx.conf
+# ลบ default Nginx config ของ Alpine
+RUN rm /etc/nginx/conf.d/default.conf
+
+# คัดลอก Nginx config ของเราเองไปไว้ในไดเรกทอรีที่ถูกต้อง
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # คัดลอกไฟล์ PHP-FPM config (www.conf)
 # นี่คือส่วนสำคัญที่ต้องเพิ่มเข้าไปเพื่อให้ PHP-FPM รันที่พอร์ต 9000
@@ -30,4 +33,5 @@ EXPOSE 80
 # คำสั่งที่จะรันเมื่อ Container เริ่มต้น (รัน Nginx และ PHP-FPM)
 # เพิ่ม -c /etc/nginx/nginx.conf เพื่อให้ Nginx ใช้ config ที่เรากำหนด
 CMD sh -c "php-fpm -D && nginx -g 'daemon off;'"
+
 
