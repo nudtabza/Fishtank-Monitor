@@ -7,7 +7,7 @@ $db_host = 'db.blyckkguxpqctpcfebco.supabase.co'; // เช่น db.abcdefghijk
 $db_port = '5432'; // Supabase ใช้ port 5432
 $db_name = 'postgres'; // ชื่อฐานข้อมูล
 $db_user = 'postgres'; // ชื่อผู้ใช้งาน (มักจะเป็น postgres)
-$db_pass = 'oo83EYxDvIzAsZvq'; // รหัสผ่านฐานข้อมูล
+$db_pass = 'dHDA8tb2YPv7lzqM'; // รหัสผ่านฐานข้อมูล
 
 try {
     // ใช้ PDO สำหรับ PostgreSQL (pgsql)
@@ -20,3 +20,4 @@ try {
     exit();
 }
 ?>
+
