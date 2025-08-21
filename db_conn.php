@@ -1,9 +1,9 @@
 <?php
-$host = getenv('DB_HOST');
-$port = getenv('DB_PORT');
-$db   = getenv('DB_NAME');
-$user = getenv('DB_USER');
-$pass = getenv('DB_PASSWORD');
+$host = getenv('db.blyckkguxpqctpcfebco.supabase.co');
+$port = getenv('5432');
+$db   = getenv('postgres');
+$user = getenv('postgres');
+$pass = getenv('oo83EYxDvIzAsZvq');
 
 try {
     $dsn = "pgsql:host=$host;port=$port;dbname=$db;";
@@ -20,3 +20,4 @@ try {
     exit;
 }
 ?>
+
