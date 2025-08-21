@@ -3,11 +3,11 @@
 
 // ข้อมูลการเชื่อมต่อ Supabase PostgreSQL
 // ⚠️ เปลี่ยนค่าเหล่านี้เป็นข้อมูลของโปรเจกต์คุณเอง
-$db_host = 'db.blyckkguxpqctpcfebco.supabase.co'; // เช่น db.abcdefghijklm.supabase.co
+$db_host = 'dpg-d2gb4fvdiees73dashs0-a'; // เช่น db.abcdefghijklm.supabase.co
 $db_port = '5432'; // Supabase ใช้ port 5432
-$db_name = 'postgres'; // ชื่อฐานข้อมูล
-$db_user = 'postgres'; // ชื่อผู้ใช้งาน (มักจะเป็น postgres)
-$db_pass = 'dHDA8tb2YPv7lzqM'; // รหัสผ่านฐานข้อมูล
+$db_name = 'fishtank_monitor'; // ชื่อฐานข้อมูล
+$db_user = 'nudtabza'; // ชื่อผู้ใช้งาน (มักจะเป็น postgres)
+$db_pass = '2gR0SGTsc1hORz1KZNCRulU7J93IVDSZ'; // รหัสผ่านฐานข้อมูล
 
 try {
     // ใช้ PDO สำหรับ PostgreSQL (pgsql)
@@ -20,4 +20,5 @@ try {
     exit();
 }
 ?>
+
 
