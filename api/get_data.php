@@ -1,30 +1,38 @@
 <?php
 // api/get_data.php
 
-session_start(); // เริ่มต้น session เพื่อใช้ตรวจสอบการ Login
-header('Content-Type: application/json');
+session_start();
+header('Content-Type: application/json; charset=utf-8');
 
-// ตรวจสอบการ Login (แนะนำให้เปิดใช้งานใน Production เพื่อความปลอดภัย)
-if (!isset($_SESSION['user_id'])) {
-    echo json_encode(["status" => "error", "message" => "Unauthorized access."]);
-    exit();
-}
+// ตรวจสอบการเข้าสู่ระบบ
+// if (!isset($_SESSION['user_id'])) {
+//     echo json_encode(["status" => "error", "message" => "Unauthorized access."]);
+//     exit();
+// }
 
-// Include the database connection file
-// เส้นทาง: '../db_conn.php' หมายถึง ถอยออกจากโฟลเดอร์ 'api' ไปหนึ่งระดับ
+// เรียกใช้งานไฟล์เชื่อมต่อฐานข้อมูล
 require_once '../db_conn.php';
 
-// Fetch latest sensor data
-// Note: mysqli syntax is still used here. It's recommended to change it to PDO as well for consistency.
-$sql = "SELECT temperature, ph_value, turbidity, timestamp FROM sensor_data ORDER BY timestamp DESC LIMIT 1";
-$result = $conn->query($sql);
+try {
+    // SQL query เพื่อดึงข้อมูลเซ็นเซอร์ล่าสุด 1 รายการ
+    $sql = "SELECT temperature, ph_value, turbidity, timestamp FROM sensor_data ORDER BY id DESC LIMIT 1";
+    $stmt = $conn->prepare($sql);
+    $stmt->execute();
+    
+    $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
-if ($result->num_rows > 0) {
-    $row = $result->fetch_assoc();
-    echo json_encode(["status" => "success", "data" => $row]);
-} else {
-    echo json_encode(["status" => "error", "message" => "No data found"]);
+    if ($data) {
+        // ส่งข้อมูลเป็น JSON
+        echo json_encode(["status" => "success", "data" => $data]);
+    } else {
+        // ถ้าไม่พบข้อมูล
+        echo json_encode(["status" => "success", "data" => (object)[]]);
+    }
+} catch (PDOException $e) {
+    // จัดการข้อผิดพลาดที่เกี่ยวกับฐานข้อมูล
+    http_response_code(500);
+    echo json_encode(["status" => "error", "message" => "Database error: " . $e->getMessage()]);
 }
 
-$conn->close(); // ปิดการเชื่อมต่อฐานข้อมูล
+$conn = null; // ปิดการเชื่อมต่อ
 ?>
