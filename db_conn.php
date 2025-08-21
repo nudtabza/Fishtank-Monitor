@@ -1,10 +1,10 @@
 <?php
-// แก้ไขโค้ดนี้เพื่อใช้ Pooler Connection
-$host = 'aws-1-ap-southeast-1.pooler.supabase.com'; // โฮสต์สำหรับ Transaction Pooler
-$port = '6543'; // พอร์ตสำหรับ Transaction Pooler
-$db   = getenv('DB_NAME'); // ดึงจาก Environment Variables ใน Render.com
-$user = getenv('DB_USER'); // ดึงจาก Environment Variables ใน Render.com
-$pass = getenv('DB_PASSWORD'); // ดึงจาก Environment Variables ใน Render.com
+// แก้ไขโค้ดนี้เพื่อใช้ Pooler Connection ที่ถูกต้อง
+$host = 'aws-0-ap-southeast-1.pooler.supabase.com'; // Host ที่ถูกต้อง
+$port = '5432'; // Port ที่ถูกต้อง
+$db   = getenv('DB_NAME');
+$user = getenv('DB_USER');
+$pass = getenv('DB_PASSWORD');
 
 // กำหนดตัวแปรสำหรับเก็บสถานะการเชื่อมต่อ
 $conn = null;
@@ -16,11 +16,10 @@ try {
     // สร้างการเชื่อมต่อ PDO พร้อมกับบังคับใช้ SSL
     $conn = new PDO($dsn, $user, $pass, [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        // เพิ่มบรรทัดนี้เพื่อบังคับใช้ SSL ซึ่งจำเป็นสำหรับ Supabase
+        // เพิ่มบรรทัดนี้เพื่อบังคับใช้ SSL
         PDO::PGSQL_ATTR_SSLMODE => 'require'
     ]);
 } catch (PDOException $e) {
-    // หากการเชื่อมต่อล้มเหลว จะไม่มีการ echo อะไรออกมา
-    // เพราะไฟล์อื่นๆ ที่เรียกใช้ไฟล์นี้จะจัดการข้อผิดพลาดเอง
+    // หากการเชื่อมต่อล้มเหลว จะไม่ echo อะไรออกมา
 }
 ?>
