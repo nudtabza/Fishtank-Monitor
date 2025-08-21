@@ -2,7 +2,7 @@
 // auth.php
 
 session_start();
-require_once 'db_conn.php';
+require_once './/db_conn.php';
 
 // ตั้งค่า Header สำหรับ CORS และ Content-Type
 header("Access-Control-Allow-Origin: *");
@@ -93,3 +93,4 @@ if ($action === 'register') {
 // ปิดการเชื่อมต่อ
 $conn = null;
 ?>
+
