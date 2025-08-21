@@ -1,7 +1,8 @@
 <?php
 session_start();
+// ตรวจสอบว่าผู้ใช้ล็อกอินอยู่หรือไม่
 if (!isset($_SESSION['user_id'])) {
-    header('Location: index.php');
+    header('Location: index.php'); // ถ้ายังไม่ได้ล็อกอิน ให้ redirect ไปหน้า Login
     exit();
 }
 ?>
@@ -31,24 +32,61 @@ if (!isset($_SESSION['user_id'])) {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        
+        /* Custom Styles */
+        body {
+            background-color: #f0f2f5;
+        }
+        .sidebar-heading {
+            font-size: 1.5rem;
+            color: #172b4d;
+            font-weight: 600;
+        }
+        #sidebar-wrapper .list-group-item-action:hover {
+            color: #4e73df;
+        }
+        .card {
+            border: none;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: #495057;
+        }
+        .card-text {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #212529;
+        }
+        .badge {
+            font-size: 0.8rem;
+            padding: 0.5em 0.8em;
+            border-radius: 1rem;
+        }
+        .bg-light-blue {
+            background-color: #e3f2fd;
+        }
     </style>
 </head>
 <body class="bg-light-blue">
     <div class="d-flex" id="wrapper">
-        <!-- Sidebar-->
         <div class="bg-white border-end" id="sidebar-wrapper">
             <div class="sidebar-heading p-4">
-                <i class="fas fa-water me-2"></i> Dashboard
+                <i class="fas fa-water me-2 text-primary"></i> Dashboard
             </div>
             <div class="list-group list-group-flush">
-                <a class="list-group-item list-group-item-action list-group-item-light p-3" href="dashboard.php"><i class="fas fa-tachometer-alt me-2"></i> ข้อมูลล่าสุด</a>
+                <a class="list-group-item list-group-item-action list-group-item-light p-3 active" href="dashboard.php"><i class="fas fa-tachometer-alt me-2"></i> ข้อมูลล่าสุด</a>
                 <a class="list-group-item list-group-item-action list-group-item-light p-3" href="settings.php"><i class="fas fa-cog me-2"></i> ตั้งค่า</a>
                 <a class="list-group-item list-group-item-action list-group-item-light p-3" href="logout.php"><i class="fas fa-sign-out-alt me-2"></i> ออกจากระบบ</a>
             </div>
         </div>
-        <!-- Page content wrapper-->
         <div id="page-content-wrapper">
-            <!-- Top navigation-->
             <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
                 <div class="container-fluid">
                     <button class="btn btn-primary" id="sidebarToggle"><i class="fas fa-bars"></i></button>
@@ -61,11 +99,11 @@ if (!isset($_SESSION['user_id'])) {
                     </div>
                 </div>
             </nav>
-            <!-- Page content-->
             <div class="container-fluid p-4">
-                <h1 class="mt-4">ข้อมูลล่าสุด</h1>
+                <h1 class="mt-4 text-center">ข้อมูลล่าสุด</h1>
+                <p class="text-center text-muted">แสดงข้อมูลคุณภาพน้ำแบบเรียลไทม์</p>
+                
                 <div class="row g-4 mt-2">
-                    <!-- Temperature Card -->
                     <div class="col-md-4">
                         <div class="card text-center shadow-sm">
                             <div class="card-body">
@@ -75,7 +113,6 @@ if (!isset($_SESSION['user_id'])) {
                             </div>
                         </div>
                     </div>
-                    <!-- pH Card -->
                     <div class="col-md-4">
                         <div class="card text-center shadow-sm">
                             <div class="card-body">
@@ -85,7 +122,6 @@ if (!isset($_SESSION['user_id'])) {
                             </div>
                         </div>
                     </div>
-                    <!-- Turbidity Card -->
                     <div class="col-md-4">
                         <div class="card text-center shadow-sm">
                             <div class="card-body">
@@ -97,16 +133,22 @@ if (!isset($_SESSION['user_id'])) {
                     </div>
                 </div>
 
-                <h2 class="mt-5">ข้อมูลย้อนหลัง (50 ค่าล่าสุด)</h2>
+                <h2 class="mt-5 text-center">ข้อมูลย้อนหลัง (50 ค่าล่าสุด)</h2>
                 <div class="row mt-4">
                     <div class="col-md-12">
-                        <canvas id="temperatureChart"></canvas>
+                        <div class="card p-3 shadow-sm">
+                            <canvas id="temperatureChart"></canvas>
+                        </div>
                     </div>
                     <div class="col-md-12 mt-4">
-                        <canvas id="phChart"></canvas>
+                        <div class="card p-3 shadow-sm">
+                            <canvas id="phChart"></canvas>
+                        </div>
                     </div>
                     <div class="col-md-12 mt-4">
-                        <canvas id="turbidityChart"></canvas>
+                        <div class="card p-3 shadow-sm">
+                            <canvas id="turbidityChart"></canvas>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -116,11 +158,13 @@ if (!isset($_SESSION['user_id'])) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         window.addEventListener('DOMContentLoaded', event => {
+            // Toggle the side navigation
             const sidebarToggle = document.body.querySelector('#sidebarToggle');
             if (sidebarToggle) {
                 sidebarToggle.addEventListener('click', event => {
                     event.preventDefault();
                     document.body.classList.toggle('sb-sidenav-toggled');
+                    localStorage.setItem('sb-sidenav-toggle', document.body.classList.contains('sb-sidenav-toggled'));
                 });
             }
         });
@@ -153,8 +197,28 @@ if (!isset($_SESSION['user_id'])) {
                     label: 'อุณหภูมิ (°C)',
                     data: [],
                     borderColor: 'rgb(75, 192, 192)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
                     tension: 0.1
                 }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'เวลา'
+                        }
+                    },
+                    y: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'อุณหภูมิ (°C)'
+                        }
+                    }
+                }
             }
         });
 
@@ -167,8 +231,28 @@ if (!isset($_SESSION['user_id'])) {
                     label: 'ค่า pH',
                     data: [],
                     borderColor: 'rgb(54, 162, 235)',
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
                     tension: 0.1
                 }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'เวลา'
+                        }
+                    },
+                    y: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'ค่า pH'
+                        }
+                    }
+                }
             }
         });
 
@@ -181,15 +265,33 @@ if (!isset($_SESSION['user_id'])) {
                     label: 'ความขุ่น (NTU)',
                     data: [],
                     borderColor: 'rgb(255, 206, 86)',
+                    backgroundColor: 'rgba(255, 206, 86, 0.2)',
                     tension: 0.1
                 }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'เวลา'
+                        }
+                    },
+                    y: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'ความขุ่น (NTU)'
+                        }
+                    }
+                }
             }
         });
         
-        // Fetch and display latest sensor data
         async function fetchLatestSensorData() {
             try {
-                // แก้ไข URL ให้ถูกต้อง
                 const response = await fetch('api/get_data.php');
                 const data = await response.json();
                 
@@ -199,7 +301,6 @@ if (!isset($_SESSION['user_id'])) {
                     document.getElementById('phValue').textContent = sensorData.ph_value;
                     document.getElementById('turbidityValue').textContent = `${sensorData.turbidity} NTU`;
 
-                    // Fetch user thresholds to update status
                     const settingsResponse = await fetch('api/get_settings.php');
                     const settingsData = await settingsResponse.json();
                     
@@ -209,7 +310,6 @@ if (!isset($_SESSION['user_id'])) {
                         updateStatus(parseFloat(sensorData.ph_value), parseFloat(thresholds.ph_min), parseFloat(thresholds.ph_max), 'phStatus');
                         updateStatus(parseFloat(sensorData.turbidity), null, parseFloat(thresholds.turbidity_max), 'turbidityStatus');
                     } else {
-                        // If thresholds are not set, default to "Unknown" status
                         document.getElementById('tempStatus').textContent = 'ไม่ทราบสถานะ';
                         document.getElementById('phStatus').textContent = 'ไม่ทราบสถานะ';
                         document.getElementById('turbidityStatus').textContent = 'ไม่ทราบสถานะ';
@@ -226,10 +326,8 @@ if (!isset($_SESSION['user_id'])) {
             }
         }
         
-        // Fetch and update historical data
         async function fetchHistoricalData() {
             try {
-                // แก้ไข URL ให้ถูกต้อง
                 const response = await fetch('api/get_history.php');
                 const data = await response.json();
 
