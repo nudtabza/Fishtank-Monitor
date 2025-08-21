@@ -2,7 +2,8 @@
 FROM php:8.2-fpm-alpine
 
 # ติดตั้งส่วนขยาย PHP ที่จำเป็นสำหรับ PostgreSQL
-RUN docker-php-ext-install pdo pdo_pgsql pgsql
+RUN apk add --no-cache postgresql-dev \
+    && docker-php-ext-install pdo pdo_pgsql pgsql
 
 # ติดตั้ง Nginx
 RUN apk add --no-cache nginx
