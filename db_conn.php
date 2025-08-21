@@ -11,7 +11,12 @@ try {
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
     ]);
 } catch (PDOException $e) {
-    echo "❌ Database connection failed: " . $e->getMessage();
+    header('Content-Type: application/json');
+    echo json_encode([
+        "success" => false,
+        "message" => "Database connection failed",
+        "error" => $e->getMessage()
+    ]);
     exit;
 }
 ?>
