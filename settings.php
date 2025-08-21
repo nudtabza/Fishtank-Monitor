@@ -1,12 +1,10 @@
 <?php
 session_start();
-// ตรวจสอบว่าผู้ใช้ล็อกอินอยู่หรือไม่
 if (!isset($_SESSION['user_id'])) {
-    header('Location: index.php'); // ถ้ายังไม่ได้ล็อกอิน ให้ redirect ไปหน้า Login
+    header('Location: index.php');
     exit();
 }
 
-// Include database connection
 require_once 'db_conn.php';
 
 $user_id = $_SESSION['user_id'];
@@ -23,7 +21,6 @@ try {
     $stmt = $conn->prepare("SELECT temp_min, temp_max, ph_min, ph_max, turbidity_max FROM user_thresholds WHERE user_id = ?");
     $stmt->execute([$user_id]);
     
-    // ดึงผลลัพธ์มาใส่ในตัวแปร
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($result) {
@@ -34,11 +31,11 @@ try {
         $turbidity_max = $result['turbidity_max'];
     }
 } catch (PDOException $e) {
-    // สามารถจัดการข้อผิดพลาดได้ที่นี่ ถ้าจำเป็น
+    // ถ้ามีข้อผิดพลาดเกี่ยวกับฐานข้อมูล
     error_log("Database error: " . $e->getMessage());
 }
 
-$conn = null; // ปิดการเชื่อมต่อ
+$conn = null;
 ?>
 <!DOCTYPE html>
 <html lang="th">
@@ -54,10 +51,10 @@ $conn = null; // ปิดการเชื่อมต่อ
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.getElementById('settingsForm').addEventListener('submit', async function(event) {
-            event.preventDefault(); // หยุดการ submit แบบปกติ
+            event.preventDefault();
             const formData = new FormData(this);
             const messageDiv = document.getElementById('settingsMessage');
-            messageDiv.classList.add('d-none'); // ซ่อนข้อความเก่า
+            messageDiv.classList.add('d-none');
 
             try {
                 const response = await fetch('api/save_settings.php', {
