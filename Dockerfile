@@ -1,8 +1,8 @@
 # ใช้ PHP-FPM image เป็น base
 FROM php:8.2-fpm-alpine
 
-# ติดตั้งส่วนขยาย PHP ที่จำเป็นสำหรับ MySQL (mysqli และ pdo_mysql)
-RUN docker-php-ext-install mysqli pdo pdo_mysql
+# ติดตั้งส่วนขยาย PHP ที่จำเป็นสำหรับ PostgreSQL
+RUN docker-php-ext-install pdo pdo_pgsql pgsql
 
 # ติดตั้ง Nginx
 RUN apk add --no-cache nginx
