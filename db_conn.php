@@ -1,32 +1,22 @@
 <?php
-// ดึงค่าจาก Environment Variables ใน Render.com
-$host = getenv('DB_HOST');
-$port = getenv('DB_PORT');
-$db   = getenv('DB_NAME');
-$user = getenv('DB_USER');
-$pass = getenv('DB_PASSWORD');
+// db_conn.php
 
-// กำหนดตัวแปรสำหรับเก็บสถานะการเชื่อมต่อ
-$conn = null;
+// ข้อมูลการเชื่อมต่อ Supabase PostgreSQL
+// ⚠️ เปลี่ยนค่าเหล่านี้เป็นข้อมูลของโปรเจกต์คุณเอง
+$db_host = 'db.blyckkguxpqctpcfebco.supabase.co'; // เช่น db.abcdefghijklm.supabase.co
+$db_port = '5432'; // Supabase ใช้ port 5432
+$db_name = 'postgres'; // ชื่อฐานข้อมูล
+$db_user = 'postgres'; // ชื่อผู้ใช้งาน (มักจะเป็น postgres)
+$db_pass = 'oo83EYxDvIzAsZvq'; // รหัสผ่านฐานข้อมูล
 
 try {
-    // สร้าง DSN (Data Source Name)
-    $dsn = "pgsql:host=$host;port=$port;dbname=$db;";
-
-    // สร้างการเชื่อมต่อ PDO พร้อมกับบังคับใช้ SSL
-    $conn = new PDO($dsn, $user, $pass, [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        // เพิ่มบรรทัดนี้เพื่อบังคับใช้ SSL ซึ่งจำเป็นสำหรับ Supabase
-        PDO::PGSQL_ATTR_SSLMODE => 'require'
-    ]);
-} catch (PDOException $e) {
-    // หากการเชื่อมต่อล้มเหลว จะแสดงข้อความผิดพลาด
-    header('Content-Type: application/json');
-    echo json_encode([
-        "success" => false,
-        "message" => "Database connection failed",
-        "error" => $e->getMessage()
-    ]);
-    exit;
+    // ใช้ PDO สำหรับ PostgreSQL (pgsql)
+    $conn = new PDO("pgsql:host=$db_host;port=$db_port;dbname=$db_name;user=$db_user;password=$db_pass");
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch(PDOException $e) {
+    http_response_code(500); // ตั้งค่า HTTP status code เป็น 500 (Internal Server Error)
+    echo json_encode(["message" => "Database connection failed"]);
+    error_log("Database connection failed: " . $e->getMessage());
+    exit();
 }
 ?>
