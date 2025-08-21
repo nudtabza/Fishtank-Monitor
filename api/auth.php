@@ -2,14 +2,16 @@
 session_start();
 header('Content-Type: application/json');
 
-// Include the database connection file
-// ตรวจสอบเส้นทางให้ถูกต้อง: '../db_conn.php' หมายถึง ถอยออกจากโฟลเดอร์ 'api' ไปหนึ่งระดับ
+// เรียกใช้งานไฟล์เชื่อมต่อฐานข้อมูล
 require_once '../db_conn.php';
 
-// เมื่อเรียกใช้ db_conn.php แล้ว ตัวแปร $conn จะพร้อมใช้งานทันที
-// ไม่ต้องประกาศ $servername, $username, $password, $dbname หรือสร้าง $conn ใหม่ในไฟล์นี้
+// เพิ่มการตรวจสอบว่าการเชื่อมต่อสำเร็จหรือไม่
+if ($conn === null) {
+    echo json_encode(["status" => "error", "message" => "Database connection failed"]);
+    exit();
+}
 
-$action = $_GET['action'] ?? ''; // ดึงค่า action จาก URL
+$action = $_GET['action'] ?? '';
 
 if ($action === 'register') {
     // โค้ดสำหรับลงทะเบียนผู้ใช้ใหม่
@@ -31,24 +33,17 @@ if ($action === 'register') {
     $stmt->execute();
     $stmt->store_result();
     if ($stmt->num_rows > 0) {
-        echo json_encode(["status" => "error", "message" => "ชื่อผู้ใช้หรืออีเมลนี้มีผู้ใช้งานแล้ว"]);
-        $stmt->close();
-        $conn->close(); // ปิดการเชื่อมต่อเมื่อเกิดข้อผิดพลาดและ exit
-        exit();
-    }
-    $stmt->close();
-
-    // Insert new user
-    $stmt = $conn->prepare("INSERT INTO users (username, password, email) VALUES (?, ?, ?)");
-    $stmt->bind_param("sss", $username, $hashed_password, $email);
-
-    if ($stmt->execute()) {
-        echo json_encode(["status" => "success", "message" => "สมัครสมาชิกสำเร็จ! กรุณาเข้าสู่ระบบ"]);
+        echo json_encode(["status" => "error", "message" => "ชื่อผู้ใช้หรืออีเมลนี้มีอยู่แล้ว"]);
     } else {
-        echo json_encode(["status" => "error", "message" => "เกิดข้อผิดพลาดในการสมัครสมาชิก: " . $stmt->error]);
+        $stmt = $conn->prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)");
+        $stmt->bind_param("sss", $username, $email, $hashed_password);
+        if ($stmt->execute()) {
+            echo json_encode(["status" => "success", "message" => "สมัครสมาชิกสำเร็จ! กรุณาเข้าสู่ระบบ"]);
+        } else {
+            echo json_encode(["status" => "error", "message" => "เกิดข้อผิดพลาดในการสมัครสมาชิก"]);
+        }
     }
     $stmt->close();
-
 } elseif ($action === 'login') {
     // โค้ดสำหรับเข้าสู่ระบบผู้ใช้
     $username = $_POST['username'] ?? '';
@@ -64,7 +59,7 @@ if ($action === 'register') {
     $stmt->execute();
     $stmt->store_result();
     $stmt->bind_result($id, $db_username, $hashed_password);
-    $stmt->fetch(); // ดึงผลลัพธ์มาใส่ตัวแปร
+    $stmt->fetch();
 
     if ($stmt->num_rows === 1 && password_verify($password, $hashed_password)) {
         $_SESSION['user_id'] = $id;
@@ -74,11 +69,5 @@ if ($action === 'register') {
         echo json_encode(["status" => "error", "message" => "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง"]);
     }
     $stmt->close();
-
-} else {
-    // ถ้าไม่มี action ที่ถูกต้อง (เช่น ไม่มี ?action=register หรือ ?action=login ใน URL)
-    echo json_encode(["status" => "error", "message" => "คำขอไม่ถูกต้อง"]);
 }
-
-$conn->close(); // ปิดการเชื่อมต่อฐานข้อมูลเมื่อเสร็จสิ้นการทำงาน
 ?>
