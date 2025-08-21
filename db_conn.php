@@ -1,6 +1,5 @@
 <?php
-// กำหนดข้อมูลการเชื่อมต่อฐานข้อมูล
-// Get the database connection URL from the environment variable provided by Render.com
+// Get the database connection URL from the environment variable provided by Render.com.
 $db_url = getenv('DATABASE_URL');
 if (!$db_url) {
     die("Error: DATABASE_URL environment variable is not set.");
@@ -25,6 +24,8 @@ try {
     // Set the PDO error mode to throw exceptions on errors, making debugging easier.
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
+    // You can add a success message for debugging, then remove it later.
+    echo "Connected successfully to the database!";
 } catch (PDOException $e) {
     // Catch any connection errors and display a user-friendly message.
     die("Error: Could not connect. " . $e->getMessage());
