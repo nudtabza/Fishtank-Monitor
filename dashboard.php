@@ -17,90 +17,158 @@ if (!isset($_SESSION['user_id'])) {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="css/style.css">
     <style>
-        .loading-spinner {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255, 255, 255, .3);
-            border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 1s ease-in-out infinite;
-            -webkit-animation: spin 1s ease-in-out infinite;
+        :root {
+            --dark-bg: #121212;
+            --dark-card: #1e1e1e;
+            --dark-text: #e0e0e0;
+            --dark-secondary-text: #b0b0b0;
+            --blue-accent: #007bff;
+            --blue-accent-hover: #0056b3;
+            --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            --card-hover-scale: scale(1.02);
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        /* Custom Styles */
         body {
-            background-color: #f0f2f5;
+            background-color: var(--dark-bg);
+            color: var(--dark-text);
         }
+
+        /* Sidebar & Wrapper */
+        .d-flex {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        #wrapper {
+            transition: margin 0.25s ease-out;
+        }
+
+        #sidebar-wrapper {
+            width: 250px;
+            background-color: var(--dark-card);
+            border-right: 1px solid #2e2e2e;
+            transition: margin 0.25s ease-out;
+        }
+
         .sidebar-heading {
             font-size: 1.5rem;
-            color: #172b4d;
+            color: var(--blue-accent);
             font-weight: 600;
+            border-bottom: 1px solid #2e2e2e;
         }
-        #sidebar-wrapper .list-group-item-action:hover {
-            color: #4e73df;
+
+        #sidebar-wrapper .list-group-item {
+            background-color: var(--dark-card);
+            color: var(--dark-secondary-text);
+            border: none;
+            transition: background-color 0.2s ease-in-out;
         }
+
+        #sidebar-wrapper .list-group-item:hover,
+        #sidebar-wrapper .list-group-item.active {
+            background-color: #2e2e2e;
+            color: var(--blue-accent);
+        }
+
+        #page-content-wrapper {
+            flex-grow: 1;
+            padding: 20px;
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: var(--dark-card) !important;
+            border-bottom: 1px solid #2e2e2e;
+            margin-bottom: 2rem;
+        }
+
+        .navbar-brand, .nav-link {
+            color: var(--dark-text) !important;
+        }
+
+        .btn-primary {
+            background-color: var(--blue-accent);
+            border-color: var(--blue-accent);
+        }
+
+        /* Cards */
         .card {
+            background-color: var(--dark-card);
+            color: var(--dark-text);
             border: none;
             border-radius: 1rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--card-shadow);
             transition: transform 0.3s ease;
         }
+        
         .card:hover {
-            transform: translateY(-5px);
+            transform: var(--card-hover-scale);
         }
+
         .card-title {
             font-size: 1.25rem;
             font-weight: 500;
-            color: #495057;
+            color: var(--dark-text);
         }
+
         .card-text {
             font-size: 2.5rem;
             font-weight: 700;
-            color: #212529;
+            color: var(--blue-accent);
         }
+
         .badge {
             font-size: 0.8rem;
             padding: 0.5em 0.8em;
             border-radius: 1rem;
         }
-        .bg-light-blue {
-            background-color: #e3f2fd;
+
+        .bg-success { background-color: #28a745 !important; }
+        .bg-danger { background-color: #dc3545 !important; }
+        .bg-secondary { background-color: #6c757d !important; }
+
+        /* Chart adjustments for dark theme */
+        .chartjs-render-monitor {
+            background-color: var(--dark-card);
+            border-radius: 1rem;
+            box-shadow: var(--card-shadow);
+            padding: 1rem;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 40vh;
+            margin-bottom: 2rem;
         }
     </style>
 </head>
-<body class="bg-light-blue">
+<body class="bg-dark">
     <div class="d-flex" id="wrapper">
-        <div class="bg-white border-end" id="sidebar-wrapper">
+        <div class="border-end" id="sidebar-wrapper">
             <div class="sidebar-heading p-4">
-                <i class="fas fa-water me-2 text-primary"></i> Dashboard
+                <i class="fas fa-water me-2"></i> Dashboard
             </div>
             <div class="list-group list-group-flush">
-                <a class="list-group-item list-group-item-action list-group-item-light p-3 active" href="dashboard.php"><i class="fas fa-tachometer-alt me-2"></i> ข้อมูลล่าสุด</a>
-                <a class="list-group-item list-group-item-action list-group-item-light p-3" href="settings.php"><i class="fas fa-cog me-2"></i> ตั้งค่า</a>
-                <a class="list-group-item list-group-item-action list-group-item-light p-3" href="logout.php"><i class="fas fa-sign-out-alt me-2"></i> ออกจากระบบ</a>
+                <a class="list-group-item list-group-item-action p-3 active" href="dashboard.php"><i class="fas fa-tachometer-alt me-2"></i> ข้อมูลล่าสุด</a>
+                <a class="list-group-item list-group-item-action p-3" href="settings.php"><i class="fas fa-cog me-2"></i> ตั้งค่า</a>
+                <a class="list-group-item list-group-item-action p-3" href="logout.php"><i class="fas fa-sign-out-alt me-2"></i> ออกจากระบบ</a>
             </div>
         </div>
         <div id="page-content-wrapper">
-            <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+            <nav class="navbar navbar-expand-lg navbar-dark border-bottom">
                 <div class="container-fluid">
                     <button class="btn btn-primary" id="sidebarToggle"><i class="fas fa-bars"></i></button>
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav ms-auto mt-2 mt-lg-0">
                             <li class="nav-item">
-                                <span class="nav-link text-dark">Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?></span>
+                                <span class="nav-link text-muted">Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?></span>
                             </li>
                         </ul>
                     </div>
                 </div>
             </nav>
             <div class="container-fluid p-4">
-                <h1 class="mt-4 text-center">ข้อมูลล่าสุด</h1>
+                <h1 class="mt-4 text-center text-light">ข้อมูลล่าสุด</h1>
                 <p class="text-center text-muted">แสดงข้อมูลคุณภาพน้ำแบบเรียลไทม์</p>
                 
                 <div class="row g-4 mt-2">
@@ -133,20 +201,20 @@ if (!isset($_SESSION['user_id'])) {
                     </div>
                 </div>
 
-                <h2 class="mt-5 text-center">ข้อมูลย้อนหลัง (50 ค่าล่าสุด)</h2>
+                <h2 class="mt-5 text-center text-light">ข้อมูลย้อนหลัง (50 ค่าล่าสุด)</h2>
                 <div class="row mt-4">
                     <div class="col-md-12">
-                        <div class="card p-3 shadow-sm">
+                        <div class="card p-3 shadow-sm chart-container">
                             <canvas id="temperatureChart"></canvas>
                         </div>
                     </div>
                     <div class="col-md-12 mt-4">
-                        <div class="card p-3 shadow-sm">
+                        <div class="card p-3 shadow-sm chart-container">
                             <canvas id="phChart"></canvas>
                         </div>
                     </div>
                     <div class="col-md-12 mt-4">
-                        <div class="card p-3 shadow-sm">
+                        <div class="card p-3 shadow-sm chart-container">
                             <canvas id="turbidityChart"></canvas>
                         </div>
                     </div>
@@ -188,6 +256,47 @@ if (!isset($_SESSION['user_id'])) {
         }
 
         // Initialize charts
+        const chartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'เวลา',
+                        color: 'var(--dark-secondary-text)'
+                    },
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    },
+                    ticks: {
+                        color: 'var(--dark-text)'
+                    }
+                },
+                y: {
+                    display: true,
+                    title: {
+                        display: true,
+                        color: 'var(--dark-secondary-text)'
+                    },
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    },
+                    ticks: {
+                        color: 'var(--dark-text)'
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    labels: {
+                        color: 'var(--dark-text)'
+                    }
+                }
+            }
+        };
+
         const ctxTemp = document.getElementById('temperatureChart').getContext('2d');
         const temperatureChart = new Chart(ctxTemp, {
             type: 'line',
@@ -196,25 +305,20 @@ if (!isset($_SESSION['user_id'])) {
                 datasets: [{
                     label: 'อุณหภูมิ (°C)',
                     data: [],
-                    borderColor: 'rgb(75, 192, 192)',
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    tension: 0.1
+                    borderColor: '#2196F3',
+                    backgroundColor: 'rgba(33, 150, 243, 0.2)',
+                    tension: 0.3,
+                    fill: true
                 }]
             },
             options: {
-                responsive: true,
+                ...chartOptions,
                 scales: {
-                    x: {
-                        display: true,
-                        title: {
-                            display: true,
-                            text: 'เวลา'
-                        }
-                    },
+                    ...chartOptions.scales,
                     y: {
-                        display: true,
+                        ...chartOptions.scales.y,
                         title: {
-                            display: true,
+                            ...chartOptions.scales.y.title,
                             text: 'อุณหภูมิ (°C)'
                         }
                     }
@@ -230,25 +334,20 @@ if (!isset($_SESSION['user_id'])) {
                 datasets: [{
                     label: 'ค่า pH',
                     data: [],
-                    borderColor: 'rgb(54, 162, 235)',
-                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                    tension: 0.1
+                    borderColor: '#4CAF50',
+                    backgroundColor: 'rgba(76, 175, 80, 0.2)',
+                    tension: 0.3,
+                    fill: true
                 }]
             },
             options: {
-                responsive: true,
+                ...chartOptions,
                 scales: {
-                    x: {
-                        display: true,
-                        title: {
-                            display: true,
-                            text: 'เวลา'
-                        }
-                    },
+                    ...chartOptions.scales,
                     y: {
-                        display: true,
+                        ...chartOptions.scales.y,
                         title: {
-                            display: true,
+                            ...chartOptions.scales.y.title,
                             text: 'ค่า pH'
                         }
                     }
@@ -264,25 +363,20 @@ if (!isset($_SESSION['user_id'])) {
                 datasets: [{
                     label: 'ความขุ่น (NTU)',
                     data: [],
-                    borderColor: 'rgb(255, 206, 86)',
-                    backgroundColor: 'rgba(255, 206, 86, 0.2)',
-                    tension: 0.1
+                    borderColor: '#FFC107',
+                    backgroundColor: 'rgba(255, 193, 7, 0.2)',
+                    tension: 0.3,
+                    fill: true
                 }]
             },
             options: {
-                responsive: true,
+                ...chartOptions,
                 scales: {
-                    x: {
-                        display: true,
-                        title: {
-                            display: true,
-                            text: 'เวลา'
-                        }
-                    },
+                    ...chartOptions.scales,
                     y: {
-                        display: true,
+                        ...chartOptions.scales.y,
                         title: {
-                            display: true,
+                            ...chartOptions.scales.y.title,
                             text: 'ความขุ่น (NTU)'
                         }
                     }
@@ -360,7 +454,6 @@ if (!isset($_SESSION['user_id'])) {
     
         setInterval(fetchLatestSensorData, 5000);
         setInterval(fetchHistoricalData, 60000);
-    });
     </script>
 </body>
 </html>
