@@ -20,7 +20,7 @@ try {
         // Return a JSON success response with the data
         echo json_encode(["status" => "success", "data" => $reversedResults]);
     } else {
-        // No data found in the database
+        // No data found in the database, return success with empty data
         echo json_encode(["status" => "success", "data" => []]);
     }
 } catch (PDOException $e) {
