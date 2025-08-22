@@ -389,7 +389,7 @@ if (!isset($_SESSION['user_id'])) {
                 const response = await fetch('api/get_data.php');
                 const data = await response.json();
                 
-                if (data.status === 'success' && data.data) {
+                if (data.status === 'success' && data.data && Object.keys(data.data).length > 0) {
                     const sensorData = data.data;
                     document.getElementById('tempValue').textContent = `${sensorData.temperature} °C`;
                     document.getElementById('phValue').textContent = sensorData.ph_value;
@@ -398,7 +398,7 @@ if (!isset($_SESSION['user_id'])) {
                     const settingsResponse = await fetch('api/get_settings.php');
                     const settingsData = await settingsResponse.json();
                     
-                    if (settingsData.status === 'success' && settingsData.data) {
+                    if (settingsData.status === 'success' && settingsData.data && Object.keys(settingsData.data).length > 0) {
                         const thresholds = settingsData.data;
                         updateStatus(parseFloat(sensorData.temperature), parseFloat(thresholds.temp_min), parseFloat(thresholds.temp_max), 'tempStatus');
                         updateStatus(parseFloat(sensorData.ph_value), parseFloat(thresholds.ph_min), parseFloat(thresholds.ph_max), 'phStatus');
@@ -412,18 +412,15 @@ if (!isset($_SESSION['user_id'])) {
                         document.getElementById('turbidityStatus').className = 'badge bg-secondary';
                     }
                 } else {
-                    document.getElementById('tempValue').textContent = 'Error';
-                    document.getElementById('phValue').textContent = 'Error';
-                    document.getElementById('turbidityValue').textContent = 'Error';
-                    document.getElementById('tempStatus').textContent = 'Error';
-                    document.getElementById('phStatus').textContent = 'Error';
-                    document.getElementById('turbidityStatus').textContent = 'Error';
-                    document.getElementById('tempStatus').classList.remove('bg-success', 'bg-danger', 'bg-secondary');
-                    document.getElementById('phStatus').classList.remove('bg-success', 'bg-danger', 'bg-secondary');
-                    document.getElementById('turbidityStatus').classList.remove('bg-success', 'bg-danger', 'bg-secondary');
-                    document.getElementById('tempStatus').classList.add('bg-danger');
-                    document.getElementById('phStatus').classList.add('bg-danger');
-                    document.getElementById('turbidityStatus').classList.add('bg-danger');
+                    document.getElementById('tempValue').textContent = 'ไม่มีข้อมูล';
+                    document.getElementById('phValue').textContent = 'ไม่มีข้อมูล';
+                    document.getElementById('turbidityValue').textContent = 'ไม่มีข้อมูล';
+                    document.getElementById('tempStatus').textContent = 'ไม่มีข้อมูล';
+                    document.getElementById('phStatus').textContent = 'ไม่มีข้อมูล';
+                    document.getElementById('turbidityStatus').textContent = 'ไม่มีข้อมูล';
+                    document.getElementById('tempStatus').className = 'badge bg-secondary';
+                    document.getElementById('phStatus').className = 'badge bg-secondary';
+                    document.getElementById('turbidityStatus').className = 'badge bg-secondary';
                 }
             } catch (error) {
                 console.error('Error fetching latest data:', error);
@@ -444,7 +441,7 @@ if (!isset($_SESSION['user_id'])) {
                 const response = await fetch('api/get_history.php');
                 const data = await response.json();
 
-                if (data.status === 'success' && data.data) {
+                if (data.status === 'success' && data.data && data.data.length > 0) {
                     const historicalData = data.data;
                     const labels = historicalData.map(item => new Date(item.timestamp).toLocaleTimeString());
                     const temperatures = historicalData.map(item => item.temperature);
@@ -463,7 +460,8 @@ if (!isset($_SESSION['user_id'])) {
                     turbidityChart.data.datasets[0].data = turbidities;
                     turbidityChart.update();
                 } else {
-                    console.error('Failed to fetch historical data:', data.message);
+                    console.warn('No historical data found.');
+                    // Optionally clear charts or show a message
                 }
             } catch (error) {
                 console.error('Error fetching historical data:', error);
