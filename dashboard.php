@@ -411,12 +411,31 @@ if (!isset($_SESSION['user_id'])) {
                         document.getElementById('phStatus').className = 'badge bg-secondary';
                         document.getElementById('turbidityStatus').className = 'badge bg-secondary';
                     }
+                } else {
+                    document.getElementById('tempValue').textContent = 'Error';
+                    document.getElementById('phValue').textContent = 'Error';
+                    document.getElementById('turbidityValue').textContent = 'Error';
+                    document.getElementById('tempStatus').textContent = 'Error';
+                    document.getElementById('phStatus').textContent = 'Error';
+                    document.getElementById('turbidityStatus').textContent = 'Error';
+                    document.getElementById('tempStatus').classList.remove('bg-success', 'bg-danger', 'bg-secondary');
+                    document.getElementById('phStatus').classList.remove('bg-success', 'bg-danger', 'bg-secondary');
+                    document.getElementById('turbidityStatus').classList.remove('bg-success', 'bg-danger', 'bg-secondary');
+                    document.getElementById('tempStatus').classList.add('bg-danger');
+                    document.getElementById('phStatus').classList.add('bg-danger');
+                    document.getElementById('turbidityStatus').classList.add('bg-danger');
                 }
             } catch (error) {
                 console.error('Error fetching latest data:', error);
                 document.getElementById('tempValue').textContent = 'Error';
                 document.getElementById('phValue').textContent = 'Error';
                 document.getElementById('turbidityValue').textContent = 'Error';
+                document.getElementById('tempStatus').textContent = 'Error';
+                document.getElementById('phStatus').textContent = 'Error';
+                document.getElementById('turbidityStatus').textContent = 'Error';
+                document.getElementById('tempStatus').className = 'badge bg-danger';
+                document.getElementById('phStatus').className = 'badge bg-danger';
+                document.getElementById('turbidityStatus').className = 'badge bg-danger';
             }
         }
         
@@ -443,6 +462,8 @@ if (!isset($_SESSION['user_id'])) {
                     turbidityChart.data.labels = labels;
                     turbidityChart.data.datasets[0].data = turbidities;
                     turbidityChart.update();
+                } else {
+                    console.error('Failed to fetch historical data:', data.message);
                 }
             } catch (error) {
                 console.error('Error fetching historical data:', error);
