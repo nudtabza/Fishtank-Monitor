@@ -47,7 +47,7 @@ try {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="sb-nav-fixed">
+<body class="bg-dark-bg">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
             <a class="navbar-brand" href="dashboard.php">
@@ -84,90 +84,66 @@ try {
             </div>
         </div>
     </nav>
-    <div id="layoutSidenav">
-        <div id="layoutSidenav_nav">
-            <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
-                <div class="sb-sidenav-menu">
-                    <div class="nav">
-                        <div class="sb-sidenav-menu-heading">หน้าหลัก</div>
-                        <a class="nav-link" href="dashboard.php">
-                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                            แดชบอร์ด
-                        </a>
-                        <div class="sb-sidenav-menu-heading">เมนู</div>
-                        <a class="nav-link active" href="settings.php">
-                            <div class="sb-nav-link-icon"><i class="fas fa-cogs"></i></div>
-                            ตั้งค่า
-                        </a>
-                    </div>
-                </div>
-                <div class="sb-sidenav-footer">
-                    <div class="small">ล็อกอินในฐานะ:</div>
-                    <?php echo htmlspecialchars($username); ?>
-                </div>
-            </nav>
-        </div>
-        <div id="layoutSidenav_content">
-            <main>
-                <div class="container-fluid px-4">
-                    <h1 class="mt-4"><i class="fas fa-cogs me-2"></i>ตั้งค่า</h1>
-                    <ol class="breadcrumb mb-4">
-                        <li class="breadcrumb-item active">ตั้งค่าเกณฑ์การแจ้งเตือน</li>
-                    </ol>
+    <div id="main-content">
+        <main>
+            <div class="container-fluid px-4">
+                <h1 class="mt-4"><i class="fas fa-cogs me-2"></i>ตั้งค่า</h1>
+                <ol class="breadcrumb mb-4">
+                    <li class="breadcrumb-item active">ตั้งค่าเกณฑ์การแจ้งเตือน</li>
+                </ol>
 
-                    <div class="card shadow-lg border-0 rounded-lg mt-5 mb-4">
-                        <div class="card-header bg-dark text-white"><h3 class="fw-light my-4">ตั้งค่าเกณฑ์คุณภาพน้ำ</h3></div>
-                        <div class="card-body">
-                            <div id="message" class="alert d-none" role="alert"></div>
-                            <form id="settingsForm">
-                                <div class="row g-3">
-                                    <div class="col-md-6">
-                                        <div class="form-floating mb-3">
-                                            <input class="form-control" id="temp_min" name="temp_min" type="number" step="0.1" value="<?php echo htmlspecialchars($temp_min); ?>" placeholder="อุณหภูมิต่ำสุด">
-                                            <label for="temp_min">อุณหภูมิต่ำสุด (°C)</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-floating mb-3">
-                                            <input class="form-control" id="temp_max" name="temp_max" type="number" step="0.1" value="<?php echo htmlspecialchars($temp_max); ?>" placeholder="อุณหภูมิสูงสุด">
-                                            <label for="temp_max">อุณหภูมิสูงสุด (°C)</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-floating mb-3">
-                                            <input class="form-control" id="ph_min" name="ph_min" type="number" step="0.1" value="<?php echo htmlspecialchars($ph_min); ?>" placeholder="ค่า pH ต่ำสุด">
-                                            <label for="ph_min">ค่า pH ต่ำสุด</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-floating mb-3">
-                                            <input class="form-control" id="ph_max" name="ph_max" type="number" step="0.1" value="<?php echo htmlspecialchars($ph_max); ?>" placeholder="ค่า pH สูงสุด">
-                                            <label for="ph_max">ค่า pH สูงสุด</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-12">
-                                        <div class="form-floating mb-3">
-                                            <input class="form-control" id="turbidity_max" name="turbidity_max" type="number" step="0.1" value="<?php echo htmlspecialchars($turbidity_max); ?>" placeholder="ความขุ่นสูงสุด">
-                                            <label for="turbidity_max">ความขุ่นสูงสุด (NTU)</label>
-                                        </div>
+                <div class="card shadow-lg border-0 rounded-lg mt-5 mb-4">
+                    <div class="card-header bg-dark text-white"><h3 class="fw-light my-4">ตั้งค่าเกณฑ์คุณภาพน้ำ</h3></div>
+                    <div class="card-body">
+                        <div id="message" class="alert d-none" role="alert"></div>
+                        <form id="settingsForm">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="form-floating mb-3">
+                                        <input class="form-control" id="temp_min" name="temp_min" type="number" step="0.1" value="<?php echo htmlspecialchars($temp_min); ?>" placeholder="อุณหภูมิต่ำสุด">
+                                        <label for="temp_min">อุณหภูมิต่ำสุด (°C)</label>
                                     </div>
                                 </div>
-                                <div class="d-flex align-items-center justify-content-center mt-4 mb-0">
-                                    <button class="btn btn-primary btn-lg w-100" type="submit"><i class="fas fa-save me-2"></i>บันทึกการตั้งค่า</button>
+                                <div class="col-md-6">
+                                    <div class="form-floating mb-3">
+                                        <input class="form-control" id="temp_max" name="temp_max" type="number" step="0.1" value="<?php echo htmlspecialchars($temp_max); ?>" placeholder="อุณหภูมิสูงสุด">
+                                        <label for="temp_max">อุณหภูมิสูงสุด (°C)</label>
+                                    </div>
                                 </div>
-                            </form>
-                        </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating mb-3">
+                                        <input class="form-control" id="ph_min" name="ph_min" type="number" step="0.1" value="<?php echo htmlspecialchars($ph_min); ?>" placeholder="ค่า pH ต่ำสุด">
+                                        <label for="ph_min">ค่า pH ต่ำสุด</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating mb-3">
+                                        <input class="form-control" id="ph_max" name="ph_max" type="number" step="0.1" value="<?php echo htmlspecialchars($ph_max); ?>" placeholder="ค่า pH สูงสุด">
+                                        <label for="ph_max">ค่า pH สูงสุด</label>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-floating mb-3">
+                                        <input class="form-control" id="turbidity_max" name="turbidity_max" type="number" step="0.1" value="<?php echo htmlspecialchars($turbidity_max); ?>" placeholder="ความขุ่นสูงสุด">
+                                        <label for="turbidity_max">ความขุ่นสูงสุด (NTU)</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center justify-content-center mt-4 mb-0">
+                                <button class="btn btn-primary btn-lg w-100" type="submit"><i class="fas fa-save me-2"></i>บันทึกการตั้งค่า</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
-            </main>
-            <footer class="py-4 bg-light mt-auto">
-                <div class="container-fluid px-4">
-                    <div class="d-flex align-items-center justify-content-between small">
-                        <div class="text-muted">ลิขสิทธิ์ &copy; เว็บไซต์ของคุณ 2024</div>
-                    </div>
+            </div>
+        </main>
+        <footer class="py-4 bg-light mt-auto">
+            <div class="container-fluid px-4">
+                <div class="d-flex align-items-center justify-content-between small">
+                    <div class="text-muted">ลิขสิทธิ์ &copy; เว็บไซต์ของคุณ 2024</div>
                 </div>
-            </footer>
-        </div>
+            </div>
+        </footer>
     </div>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -204,16 +180,6 @@ try {
                 messageDiv.classList.remove('d-none');
             }
         });
-
-        // Toggle the side navigation
-        const sidebarToggle = document.body.querySelector('#sidebarToggle');
-        if (sidebarToggle) {
-            sidebarToggle.addEventListener('click', event => {
-                event.preventDefault();
-                document.body.classList.toggle('sb-sidenav-toggled');
-                localStorage.setItem('sb-sidenav-toggle', document.body.classList.contains('sb-sidenav-toggled'));
-            });
-        }
     </script>
 </body>
 </html>
