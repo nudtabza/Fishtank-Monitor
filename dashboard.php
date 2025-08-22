@@ -24,424 +24,292 @@ if (!isset($_SESSION['user_id'])) {
             --dark-secondary-text: #b0b0b0;
             --blue-accent: #007bff;
             --blue-accent-hover: #0056b3;
-            --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-            --card-hover-scale: scale(1.02);
+            --card-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
-
         body {
             background-color: var(--dark-bg);
             color: var(--dark-text);
         }
-
-        /* Sidebar & Wrapper */
-        .d-flex {
-            display: flex;
-            min-height: 100vh;
-        }
-
-        #wrapper {
-            transition: margin 0.25s ease-out;
-        }
-
-        #sidebar-wrapper {
-            width: 250px;
-            background-color: var(--dark-card);
-            border-right: 1px solid #2e2e2e;
-            transition: margin 0.25s ease-out;
-        }
-
-        .sidebar-heading {
-            font-size: 1.5rem;
-            color: var(--blue-accent);
-            font-weight: 600;
-            border-bottom: 1px solid #2e2e2e;
-        }
-
-        #sidebar-wrapper .list-group-item {
-            background-color: var(--dark-card);
-            color: var(--dark-secondary-text);
-            border: none;
-            transition: background-color 0.2s ease-in-out;
-        }
-
-        #sidebar-wrapper .list-group-item:hover,
-        #sidebar-wrapper .list-group-item.active {
-            background-color: #2e2e2e;
-            color: var(--blue-accent);
-        }
-
-        #page-content-wrapper {
-            flex-grow: 1;
-            padding: 20px;
-        }
-
-        /* Navbar */
         .navbar {
-            background-color: var(--dark-card) !important;
-            border-bottom: 1px solid #2e2e2e;
-            margin-bottom: 2rem;
+            background-color: var(--dark-card);
         }
-
-        .navbar-brand, .nav-link {
-            color: var(--dark-text) !important;
+        .sidebar {
+            background-color: var(--dark-card);
+            color: var(--dark-text);
         }
-
-        .btn-primary {
-            background-color: var(--blue-accent);
-            border-color: var(--blue-accent);
-        }
-
-        /* Cards */
         .card {
             background-color: var(--dark-card);
             color: var(--dark-text);
             border: none;
-            border-radius: 1rem;
             box-shadow: var(--card-shadow);
-            transition: transform 0.3s ease;
+            margin-bottom: 1.5rem;
         }
-        
-        .card:hover {
-            transform: var(--card-hover-scale);
+        .card-header {
+            border-bottom: 1px solid #333;
         }
-
-        .card-title {
-            font-size: 1.25rem;
-            font-weight: 500;
+        .form-control, .btn {
+            background-color: #333;
             color: var(--dark-text);
+            border-color: #444;
         }
-
-        .card-text {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--blue-accent);
+        .btn-primary {
+            background-color: var(--blue-accent);
+            border-color: var(--blue-accent);
         }
-
-        .badge {
-            font-size: 0.8rem;
-            padding: 0.5em 0.8em;
-            border-radius: 1rem;
+        .btn-primary:hover {
+            background-color: var(--blue-accent-hover);
+            border-color: var(--blue-accent-hover);
         }
-
-        .bg-success { background-color: #28a745 !important; }
-        .bg-danger { background-color: #dc3545 !important; }
-        .bg-secondary { background-color: #6c757d !important; }
-
-        /* Chart adjustments for dark theme */
-        .chartjs-render-monitor {
-            background-color: var(--dark-card);
-            border-radius: 1rem;
-            box-shadow: var(--card-shadow);
-            padding: 1rem;
+        .nav-link.active {
+            background-color: var(--blue-accent) !important;
+            color: white !important;
         }
-
-        .chart-container {
-            position: relative;
-            height: 40vh;
-            margin-bottom: 2rem;
+        .nav-link:hover {
+            background-color: #333;
+        }
+        .sidebar a {
+            color: var(--dark-secondary-text);
+        }
+        .sidebar a:hover {
+            color: var(--dark-text);
+            background-color: #333;
+        }
+        .card-title, .card-subtitle {
+            color: var(--dark-secondary-text);
         }
     </style>
 </head>
-<body class="bg-dark">
-    <div class="d-flex" id="wrapper">
-        <div class="border-end" id="sidebar-wrapper">
-            <div class="sidebar-heading p-4">
-                <i class="fas fa-water me-2"></i> Dashboard
-            </div>
-            <div class="list-group list-group-flush">
-                <a class="list-group-item list-group-item-action p-3 active" href="dashboard.php"><i class="fas fa-tachometer-alt me-2"></i> ข้อมูลล่าสุด</a>
-                <a class="list-group-item list-group-item-action p-3" href="settings.php"><i class="fas fa-cog me-2"></i> ตั้งค่า</a>
-                <a class="list-group-item list-group-item-action p-3" href="logout.php"><i class="fas fa-sign-out-alt me-2"></i> ออกจากระบบ</a>
-            </div>
-        </div>
-        <div id="page-content-wrapper">
-            <nav class="navbar navbar-expand-lg navbar-dark border-bottom">
-                <div class="container-fluid">
-                    <button class="btn btn-primary" id="sidebarToggle"><i class="fas fa-bars"></i></button>
-                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <ul class="navbar-nav ms-auto mt-2 mt-lg-0">
-                            <li class="nav-item">
-                                <span class="nav-link text-muted">Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?></span>
-                            </li>
-                        </ul>
+<body class="sb-nav-fixed">
+    <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+        <a class="navbar-brand ps-3" href="dashboard.php">ระบบตรวจสอบคุณภาพน้ำ</a>
+        <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
+        <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+            </form>
+        <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                    <li><a class="dropdown-item" href="settings.php">Settings</a></li>
+                    <li><hr class="dropdown-divider" /></li>
+                    <li><a class="dropdown-item" href="logout.php">Logout</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+    <div id="layoutSidenav">
+        <div id="layoutSidenav_nav">
+            <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+                <div class="sb-sidenav-menu">
+                    <div class="nav">
+                        <div class="sb-sidenav-menu-heading">Core</div>
+                        <a class="nav-link active" href="dashboard.php">
+                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                            Dashboard
+                        </a>
+                        <div class="sb-sidenav-menu-heading">Interface</div>
+                        <a class="nav-link" href="settings.php">
+                            <div class="sb-nav-link-icon"><i class="fas fa-cog"></i></div>
+                            Settings
+                        </a>
                     </div>
+                </div>
+                <div class="sb-sidenav-footer">
+                    <div class="small">Logged in as:</div>
+                    <?php echo htmlspecialchars($_SESSION['username']); ?>
                 </div>
             </nav>
-            <div class="container-fluid p-4">
-                <h1 class="mt-4 text-center text-light">ข้อมูลล่าสุด</h1>
-                <p class="text-center text-muted">แสดงข้อมูลคุณภาพน้ำแบบเรียลไทม์</p>
-                
-                <div class="row g-4 mt-2">
-                    <div class="col-md-4">
-                        <div class="card text-center shadow-sm">
-                            <div class="card-body">
-                                <h5 class="card-title text-primary"><i class="fas fa-thermometer-half me-2"></i>อุณหภูมิ</h5>
-                                <p class="card-text fs-2" id="tempValue">--</p>
-                                <span class="badge bg-secondary" id="tempStatus">กำลังโหลด...</span>
+        </div>
+        <div id="layoutSidenav_content">
+            <main>
+                <div class="container-fluid px-4">
+                    <h1 class="mt-4">Dashboard</h1>
+                    <ol class="breadcrumb mb-4">
+                        <li class="breadcrumb-item active">Live Data & Historical Charts</li>
+                    </ol>
+                    <div class="row">
+                        <div class="col-xl-4 col-md-6">
+                            <div class="card bg-primary text-white mb-4">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <div class="h3" id="temperature-display">-- °C</div>
+                                            <div class="text-white-50">อุณหภูมิ</div>
+                                        </div>
+                                        <i class="fas fa-thermometer-half fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-4 col-md-6">
+                            <div class="card bg-success text-white mb-4">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <div class="h3" id="ph-display">-- pH</div>
+                                            <div class="text-white-50">ค่า pH</div>
+                                        </div>
+                                        <i class="fas fa-flask fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-4 col-md-6">
+                            <div class="card bg-info text-white mb-4">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <div class="h3" id="turbidity-display">-- NTU</div>
+                                            <div class="text-white-50">ความขุ่น</div>
+                                        </div>
+                                        <i class="fas fa-water fa-2x"></i>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="card text-center shadow-sm">
-                            <div class="card-body">
-                                <h5 class="card-title text-success"><i class="fas fa-flask me-2"></i>ค่า pH</h5>
-                                <p class="card-text fs-2" id="phValue">--</p>
-                                <span class="badge bg-secondary" id="phStatus">กำลังโหลด...</span>
+                    <div class="row">
+                        <div class="col-xl-6">
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <i class="fas fa-chart-area me-1"></i>
+                                    อุณหภูมิ (°C)
+                                </div>
+                                <div class="card-body"><canvas id="temperatureChart" width="100%" height="40"></canvas></div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card text-center shadow-sm">
-                            <div class="card-body">
-                                <h5 class="card-title text-info"><i class="fas fa-tint me-2"></i>ความขุ่น</h5>
-                                <p class="card-text fs-2" id="turbidityValue">--</p>
-                                <span class="badge bg-secondary" id="turbidityStatus">กำลังโหลด...</span>
+                        <div class="col-xl-6">
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <i class="fas fa-chart-bar me-1"></i>
+                                    ค่า pH
+                                </div>
+                                <div class="card-body"><canvas id="phChart" width="100%" height="40"></canvas></div>
+                            </div>
+                        </div>
+                        <div class="col-xl-6">
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <i class="fas fa-chart-line me-1"></i>
+                                    ความขุ่น (NTU)
+                                </div>
+                                <div class="card-body"><canvas id="turbidityChart" width="100%" height="40"></canvas></div>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <h2 class="mt-5 text-center text-light">ข้อมูลย้อนหลัง (50 ค่าล่าสุด)</h2>
-                <div class="row mt-4">
-                    <div class="col-md-12">
-                        <div class="card p-3 shadow-sm chart-container">
-                            <canvas id="temperatureChart"></canvas>
-                        </div>
-                    </div>
-                    <div class="col-md-12 mt-4">
-                        <div class="card p-3 shadow-sm chart-container">
-                            <canvas id="phChart"></canvas>
-                        </div>
-                    </div>
-                    <div class="col-md-12 mt-4">
-                        <div class="card p-3 shadow-sm chart-container">
-                            <canvas id="turbidityChart"></canvas>
-                        </div>
+            </main>
+            <footer class="py-4 mt-auto">
+                <div class="container-fluid px-4">
+                    <div class="d-flex align-items-center justify-content-between small">
+                        <div class="text-muted">Copyright &copy; Your Website 2024</div>
                     </div>
                 </div>
-            </div>
+            </footer>
         </div>
     </div>
-    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        window.addEventListener('DOMContentLoaded', event => {
-            // Toggle the side navigation
-            const sidebarToggle = document.body.querySelector('#sidebarToggle');
-            if (sidebarToggle) {
-                sidebarToggle.addEventListener('click', event => {
-                    event.preventDefault();
-                    document.body.classList.toggle('sb-sidenav-toggled');
-                    localStorage.setItem('sb-sidenav-toggle', document.body.classList.contains('sb-sidenav-toggled'));
-                });
-            }
-        });
-        
-        // Function to update status based on thresholds
-        function updateStatus(value, min, max, elementId) {
-            const statusElement = document.getElementById(elementId);
-            if (value >= min && value <= max) {
-                statusElement.textContent = 'ปกติ';
-                statusElement.classList.remove('bg-danger', 'bg-warning', 'bg-secondary');
-                statusElement.classList.add('bg-success');
-            } else if (value < min) {
-                statusElement.textContent = 'ต่ำเกินไป';
-                statusElement.classList.remove('bg-success', 'bg-warning', 'bg-secondary');
-                statusElement.classList.add('bg-danger');
-            } else if (value > max) {
-                statusElement.textContent = 'สูงเกินไป';
-                statusElement.classList.remove('bg-success', 'bg-warning', 'bg-secondary');
-                statusElement.classList.add('bg-danger');
-            }
-        }
+        const temperatureDisplay = document.getElementById('temperature-display');
+        const phDisplay = document.getElementById('ph-display');
+        const turbidityDisplay = document.getElementById('turbidity-display');
 
-        // Initialize charts
-        const chartOptions = {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                x: {
-                    display: true,
-                    title: {
-                        display: true,
-                        text: 'เวลา',
-                        color: 'var(--dark-secondary-text)'
-                    },
-                    grid: {
-                        color: 'rgba(255, 255, 255, 0.1)'
-                    },
-                    ticks: {
-                        color: 'var(--dark-text)'
-                    }
-                },
-                y: {
-                    display: true,
-                    title: {
-                        display: true,
-                        color: 'var(--dark-secondary-text)'
-                    },
-                    grid: {
-                        color: 'rgba(255, 255, 255, 0.1)'
-                    },
-                    ticks: {
-                        color: 'var(--dark-text)'
-                    }
-                }
-            },
-            plugins: {
-                legend: {
-                    labels: {
-                        color: 'var(--dark-text)'
-                    }
-                }
-            }
-        };
-
-        const ctxTemp = document.getElementById('temperatureChart').getContext('2d');
-        const temperatureChart = new Chart(ctxTemp, {
+        // Initial charts setup (unchanged)
+        const temperatureCtx = document.getElementById('temperatureChart').getContext('2d');
+        const temperatureChart = new Chart(temperatureCtx, {
             type: 'line',
             data: {
                 labels: [],
                 datasets: [{
-                    label: 'อุณหภูมิ (°C)',
+                    label: 'อุณหภูมิ',
                     data: [],
-                    borderColor: '#2196F3',
-                    backgroundColor: 'rgba(33, 150, 243, 0.2)',
-                    tension: 0.3,
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderWidth: 1,
                     fill: true
                 }]
             },
             options: {
-                ...chartOptions,
                 scales: {
-                    ...chartOptions.scales,
                     y: {
-                        ...chartOptions.scales.y,
-                        title: {
-                            ...chartOptions.scales.y.title,
-                            text: 'อุณหภูมิ (°C)'
-                        }
+                        beginAtZero: false
                     }
                 }
             }
         });
 
-        const ctxPh = document.getElementById('phChart').getContext('2d');
-        const phChart = new Chart(ctxPh, {
+        const phCtx = document.getElementById('phChart').getContext('2d');
+        const phChart = new Chart(phCtx, {
             type: 'line',
             data: {
                 labels: [],
                 datasets: [{
                     label: 'ค่า pH',
                     data: [],
-                    borderColor: '#4CAF50',
-                    backgroundColor: 'rgba(76, 175, 80, 0.2)',
-                    tension: 0.3,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderWidth: 1,
                     fill: true
                 }]
             },
             options: {
-                ...chartOptions,
                 scales: {
-                    ...chartOptions.scales,
                     y: {
-                        ...chartOptions.scales.y,
-                        title: {
-                            ...chartOptions.scales.y.title,
-                            text: 'ค่า pH'
-                        }
+                        beginAtZero: false,
+                        suggestedMin: 6.0,
+                        suggestedMax: 8.0
                     }
                 }
             }
         });
 
-        const ctxTurbidity = document.getElementById('turbidityChart').getContext('2d');
-        const turbidityChart = new Chart(ctxTurbidity, {
+        const turbidityCtx = document.getElementById('turbidityChart').getContext('2d');
+        const turbidityChart = new Chart(turbidityCtx, {
             type: 'line',
             data: {
                 labels: [],
                 datasets: [{
-                    label: 'ความขุ่น (NTU)',
+                    label: 'ความขุ่น',
                     data: [],
-                    borderColor: '#FFC107',
-                    backgroundColor: 'rgba(255, 193, 7, 0.2)',
-                    tension: 0.3,
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderWidth: 1,
                     fill: true
                 }]
             },
             options: {
-                ...chartOptions,
                 scales: {
-                    ...chartOptions.scales,
                     y: {
-                        ...chartOptions.scales.y,
-                        title: {
-                            ...chartOptions.scales.y.title,
-                            text: 'ความขุ่น (NTU)'
-                        }
+                        beginAtZero: true
                     }
                 }
             }
         });
-        
+
         async function fetchLatestSensorData() {
             try {
                 const response = await fetch('api/get_data.php');
                 const data = await response.json();
-                
+
                 if (data.status === 'success' && data.data && Object.keys(data.data).length > 0) {
                     const sensorData = data.data;
-                    document.getElementById('tempValue').textContent = `${sensorData.temperature} °C`;
-                    document.getElementById('phValue').textContent = sensorData.ph_value;
-                    document.getElementById('turbidityValue').textContent = `${sensorData.turbidity} NTU`;
-
-                    const settingsResponse = await fetch('api/get_settings.php');
-                    const settingsData = await settingsResponse.json();
-                    
-                    if (settingsData.status === 'success' && settingsData.data && Object.keys(settingsData.data).length > 0) {
-                        const thresholds = settingsData.data;
-                        updateStatus(parseFloat(sensorData.temperature), parseFloat(thresholds.temp_min), parseFloat(thresholds.temp_max), 'tempStatus');
-                        updateStatus(parseFloat(sensorData.ph_value), parseFloat(thresholds.ph_min), parseFloat(thresholds.ph_max), 'phStatus');
-                        updateStatus(parseFloat(sensorData.turbidity), null, parseFloat(thresholds.turbidity_max), 'turbidityStatus');
-                    } else {
-                        document.getElementById('tempStatus').textContent = 'ไม่ทราบสถานะ';
-                        document.getElementById('phStatus').textContent = 'ไม่ทราบสถานะ';
-                        document.getElementById('turbidityStatus').textContent = 'ไม่ทราบสถานะ';
-                        document.getElementById('tempStatus').className = 'badge bg-secondary';
-                        document.getElementById('phStatus').className = 'badge bg-secondary';
-                        document.getElementById('turbidityStatus').className = 'badge bg-secondary';
-                    }
+                    temperatureDisplay.textContent = `${parseFloat(sensorData.temperature).toFixed(2)} °C`;
+                    phDisplay.textContent = `${parseFloat(sensorData.ph_value).toFixed(2)} pH`;
+                    turbidityDisplay.textContent = `${parseFloat(sensorData.turbidity).toFixed(2)} NTU`;
                 } else {
-                    document.getElementById('tempValue').textContent = 'ไม่มีข้อมูล';
-                    document.getElementById('phValue').textContent = 'ไม่มีข้อมูล';
-                    document.getElementById('turbidityValue').textContent = 'ไม่มีข้อมูล';
-                    document.getElementById('tempStatus').textContent = 'ไม่มีข้อมูล';
-                    document.getElementById('phStatus').textContent = 'ไม่มีข้อมูล';
-                    document.getElementById('turbidityStatus').textContent = 'ไม่มีข้อมูล';
-                    document.getElementById('tempStatus').className = 'badge bg-secondary';
-                    document.getElementById('phStatus').className = 'badge bg-secondary';
-                    document.getElementById('turbidityStatus').className = 'badge bg-secondary';
+                    console.log("No new data received. Keeping old display values.");
                 }
             } catch (error) {
                 console.error('Error fetching latest data:', error);
-                document.getElementById('tempValue').textContent = 'Error';
-                document.getElementById('phValue').textContent = 'Error';
-                document.getElementById('turbidityValue').textContent = 'Error';
-                document.getElementById('tempStatus').textContent = 'Error';
-                document.getElementById('phStatus').textContent = 'Error';
-                document.getElementById('turbidityStatus').textContent = 'Error';
-                document.getElementById('tempStatus').className = 'badge bg-danger';
-                document.getElementById('phStatus').className = 'badge bg-danger';
-                document.getElementById('turbidityStatus').className = 'badge bg-danger';
+                // On error, do nothing and keep the last known values displayed
             }
         }
-        
+
         async function fetchHistoricalData() {
             try {
                 const response = await fetch('api/get_history.php');
                 const data = await response.json();
 
-                if (data.status === 'success' && data.data && data.data.length > 0) {
+                if (data.status === 'success' && data.data) {
                     const historicalData = data.data;
                     const labels = historicalData.map(item => new Date(item.timestamp).toLocaleTimeString());
                     const temperatures = historicalData.map(item => item.temperature);
@@ -460,8 +328,7 @@ if (!isset($_SESSION['user_id'])) {
                     turbidityChart.data.datasets[0].data = turbidities;
                     turbidityChart.update();
                 } else {
-                    console.warn('No historical data found.');
-                    // Optionally clear charts or show a message
+                    console.error('Error in historical data response:', data.message);
                 }
             } catch (error) {
                 console.error('Error fetching historical data:', error);
