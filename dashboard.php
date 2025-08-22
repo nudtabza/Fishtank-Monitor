@@ -70,6 +70,9 @@ $username = htmlspecialchars($_SESSION['username'] ?? 'ผู้ใช้');
                 <ol class="breadcrumb mb-4">
                     <li class="breadcrumb-item active">ภาพรวมข้อมูลคุณภาพน้ำ</li>
                 </ol>
+                
+                <div id="alertPlaceholder"></div>
+
                 <div class="row">
                     <div class="col-xl-4 col-md-6 mb-4">
                         <div class="card bg-primary text-white h-100 shadow-sm">
@@ -210,10 +213,27 @@ $username = htmlspecialchars($_SESSION['username'] ?? 'ผู้ใช้');
             try {
                 const response = await fetch('api/get_data.php');
                 const data = await response.json();
+                
+                const alertPlaceholder = document.getElementById('alertPlaceholder');
+                alertPlaceholder.innerHTML = ''; // Clear previous alerts
+
                 if (data.status === 'success' && data.data) {
+                    // Update sensor values
                     document.getElementById('temperature').textContent = `${parseFloat(data.data.temperature).toFixed(1)}°C`;
                     document.getElementById('ph_value').textContent = parseFloat(data.data.ph_value).toFixed(2);
                     document.getElementById('turbidity').textContent = `${parseFloat(data.data.turbidity).toFixed(2)} NTU`;
+
+                    // Display alert if there's a message
+                    if (data.alert_message) {
+                        const wrapper = document.createElement('div');
+                        wrapper.innerHTML = [
+                            `<div class="alert alert-danger alert-dismissible fade show" role="alert">`,
+                            `   <div>${data.alert_message}</div>`,
+                            `   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`,
+                            `</div>`
+                        ].join('');
+                        alertPlaceholder.append(wrapper);
+                    }
                 }
             } catch (error) {
                 console.error('Error fetching latest data:', error);
