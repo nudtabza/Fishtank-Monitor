@@ -47,12 +47,12 @@ try {
         $turbidity_max
     ]);
 
-    echo json_encode(["status" => "success", "message" => "บันทึกการตั้งค่าเกณฑ์เรียบร้อยแล้ว!"]);
+    echo json_encode(["status" => "success", "message" => "บันทึกการตั้งค่าสำเร็จ!"]);
 
 } catch (PDOException $e) {
     http_response_code(500);
-    echo json_encode(["status" => "error", "message" => "เกิดข้อผิดพลาดในการบันทึกข้อมูล: " . $e->getMessage()]);
+    echo json_encode(["status" => "error", "message" => "Database error: " . $e->getMessage()]);
 }
 
-$conn = null; // ปิดการเชื่อมต่อ
+$conn = null;
 ?>
