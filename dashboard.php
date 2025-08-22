@@ -17,24 +17,6 @@ $username = htmlspecialchars($_SESSION['username'] ?? 'ผู้ใช้');
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <style>
-        body.sb-sidenav-toggled #layoutSidenav #layoutSidenav_nav {
-            transform: translateX(-225px);
-        }
-
-        #layoutSidenav {
-            display: flex;
-        }
-
-        #layoutSidenav_nav {
-            flex-shrink: 0;
-            transition: transform 0.15s ease-in-out;
-            z-index: 1038;
-        }
-
-        #layoutSidenav_content {
-            flex-grow: 1;
-        }
-
         .card-body .display-6 {
             font-size: 2.5rem;
         }
@@ -44,7 +26,7 @@ $username = htmlspecialchars($_SESSION['username'] ?? 'ผู้ใช้');
         }
     </style>
 </head>
-<body class="sb-nav-fixed">
+<body class="bg-dark-bg">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
             <a class="navbar-brand" href="dashboard.php">
@@ -81,109 +63,85 @@ $username = htmlspecialchars($_SESSION['username'] ?? 'ผู้ใช้');
             </div>
         </div>
     </nav>
-    <div id="layoutSidenav">
-        <div id="layoutSidenav_nav">
-            <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
-                <div class="sb-sidenav-menu">
-                    <div class="nav">
-                        <div class="sb-sidenav-menu-heading">หน้าหลัก</div>
-                        <a class="nav-link active" href="dashboard.php">
-                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                            แดชบอร์ด
-                        </a>
-                        <div class="sb-sidenav-menu-heading">เมนู</div>
-                        <a class="nav-link" href="settings.php">
-                            <div class="sb-nav-link-icon"><i class="fas fa-cogs"></i></div>
-                            ตั้งค่า
-                        </a>
-                    </div>
-                </div>
-                <div class="sb-sidenav-footer">
-                    <div class="small">ล็อกอินในฐานะ:</div>
-                    <?php echo $username; ?>
-                </div>
-            </nav>
-        </div>
-        <div id="layoutSidenav_content">
-            <main>
-                <div class="container-fluid px-4">
-                    <h1 class="mt-4"><i class="fas fa-tachometer-alt me-2"></i>แดชบอร์ด</h1>
-                    <ol class="breadcrumb mb-4">
-                        <li class="breadcrumb-item active">ภาพรวมข้อมูลคุณภาพน้ำ</li>
-                    </ol>
-                    <div class="row">
-                        <div class="col-xl-4 col-md-6 mb-4">
-                            <div class="card bg-primary text-white h-100 shadow-sm">
-                                <div class="card-body">
-                                    <div class="d-flex align-items-center">
-                                        <div class="me-3 display-4"><i class="fas fa-thermometer-half"></i></div>
-                                        <div>
-                                            <div class="text-white-50 small">อุณหภูมิ</div>
-                                            <div class="display-6 fw-bold" id="temperature">-°C</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xl-4 col-md-6 mb-4">
-                            <div class="card bg-success text-white h-100 shadow-sm">
-                                <div class="card-body">
-                                    <div class="d-flex align-items-center">
-                                        <div class="me-3 display-4"><i class="fas fa-tint"></i></div>
-                                        <div>
-                                            <div class="text-white-50 small">ค่า pH</div>
-                                            <div class="display-6 fw-bold" id="ph_value">-</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xl-4 col-md-6 mb-4">
-                            <div class="card bg-warning text-white h-100 shadow-sm">
-                                <div class="card-body">
-                                    <div class="d-flex align-items-center">
-                                        <div class="me-3 display-4"><i class="fas fa-cloud"></i></div>
-                                        <div>
-                                            <div class="text-white-50 small">ความขุ่น</div>
-                                            <div class="display-6 fw-bold" id="turbidity">- NTU</div>
-                                        </div>
+    <div id="main-content">
+        <main>
+            <div class="container-fluid px-4">
+                <h1 class="mt-4"><i class="fas fa-tachometer-alt me-2"></i>แดชบอร์ด</h1>
+                <ol class="breadcrumb mb-4">
+                    <li class="breadcrumb-item active">ภาพรวมข้อมูลคุณภาพน้ำ</li>
+                </ol>
+                <div class="row">
+                    <div class="col-xl-4 col-md-6 mb-4">
+                        <div class="card bg-primary text-white h-100 shadow-sm">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="me-3 display-4"><i class="fas fa-thermometer-half"></i></div>
+                                    <div>
+                                        <div class="text-white-50 small">อุณหภูมิ</div>
+                                        <div class="display-6 fw-bold" id="temperature">-°C</div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-lg-6 mb-4">
-                            <div class="card shadow-lg border-0 h-100">
-                                <div class="card-header bg-dark text-white"><i class="fas fa-chart-area me-1"></i> กราฟอุณหภูมิย้อนหลัง</div>
-                                <div class="card-body"><canvas id="temperatureChart"></canvas></div>
-                            </div>
-                        </div>
-                        <div class="col-lg-6 mb-4">
-                            <div class="card shadow-lg border-0 h-100">
-                                <div class="card-header bg-dark text-white"><i class="fas fa-chart-bar me-1"></i> กราฟค่า pH ย้อนหลัง</div>
-                                <div class="card-body"><canvas id="phChart"></canvas></div>
+                    <div class="col-xl-4 col-md-6 mb-4">
+                        <div class="card bg-success text-white h-100 shadow-sm">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="me-3 display-4"><i class="fas fa-tint"></i></div>
+                                    <div>
+                                        <div class="text-white-50 small">ค่า pH</div>
+                                        <div class="display-6 fw-bold" id="ph_value">-</div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-lg-12 mb-4">
-                            <div class="card shadow-lg border-0 h-100">
-                                <div class="card-header bg-dark text-white"><i class="fas fa-chart-line me-1"></i> กราฟความขุ่นย้อนหลัง</div>
-                                <div class="card-body"><canvas id="turbidityChart"></canvas></div>
+                    <div class="col-xl-4 col-md-6 mb-4">
+                        <div class="card bg-warning text-white h-100 shadow-sm">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="me-3 display-4"><i class="fas fa-cloud"></i></div>
+                                    <div>
+                                        <div class="text-white-50 small">ความขุ่น</div>
+                                        <div class="display-6 fw-bold" id="turbidity">- NTU</div>
+                                    </div>
+                                </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6 mb-4">
+                        <div class="card shadow-lg border-0 h-100">
+                            <div class="card-header bg-dark text-white"><i class="fas fa-chart-area me-1"></i> กราฟอุณหภูมิย้อนหลัง</div>
+                            <div class="card-body"><canvas id="temperatureChart"></canvas></div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 mb-4">
+                        <div class="card shadow-lg border-0 h-100">
+                            <div class="card-header bg-dark text-white"><i class="fas fa-chart-bar me-1"></i> กราฟค่า pH ย้อนหลัง</div>
+                            <div class="card-body"><canvas id="phChart"></canvas></div>
                         </div>
                     </div>
                 </div>
-            </main>
-            <footer class="py-4 bg-light mt-auto">
-                <div class="container-fluid px-4">
-                    <div class="d-flex align-items-center justify-content-between small">
-                        <div class="text-muted">ลิขสิทธิ์ &copy; เว็บไซต์ของคุณ 2024</div>
+                <div class="row">
+                    <div class="col-lg-12 mb-4">
+                        <div class="card shadow-lg border-0 h-100">
+                            <div class="card-header bg-dark text-white"><i class="fas fa-chart-line me-1"></i> กราฟความขุ่นย้อนหลัง</div>
+                            <div class="card-body"><canvas id="turbidityChart"></canvas></div>
+                        </div>
                     </div>
                 </div>
-            </footer>
-        </div>
+            </div>
+        </main>
+        <footer class="py-4 bg-light mt-auto">
+            <div class="container-fluid px-4">
+                <div class="d-flex align-items-center justify-content-between small">
+                    <div class="text-muted">ลิขสิทธิ์ &copy; เว็บไซต์ของคุณ 2024</div>
+                </div>
+            </div>
+        </footer>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -292,16 +250,6 @@ $username = htmlspecialchars($_SESSION['username'] ?? 'ผู้ใช้');
 
         setInterval(fetchLatestSensorData, 5000);
         setInterval(fetchHistoricalData, 60000);
-
-        // Toggle the side navigation
-        const sidebarToggle = document.body.querySelector('#sidebarToggle');
-        if (sidebarToggle) {
-            sidebarToggle.addEventListener('click', event => {
-                event.preventDefault();
-                document.body.classList.toggle('sb-sidenav-toggled');
-                localStorage.setItem('sb-sidenav-toggle', document.body.classList.contains('sb-sidenav-toggled'));
-            });
-        }
     </script>
 </body>
 </html>
