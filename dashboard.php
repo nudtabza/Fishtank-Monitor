@@ -5,17 +5,44 @@ if (!isset($_SESSION['user_id'])) {
     header('Location: index.php'); // ถ้ายังไม่ได้ล็อกอิน ให้ redirect ไปหน้า Login
     exit();
 }
-$username = $_SESSION['username'];
+$username = htmlspecialchars($_SESSION['username'] ?? 'ผู้ใช้');
 ?>
 <!DOCTYPE html>
 <html lang="th">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - ระบบตรวจสอบคุณภาพน้ำตู้ปลา</title>
+    <title>แดชบอร์ด - ระบบตรวจสอบคุณภาพน้ำตู้ปลา</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <style>
+        body.sb-sidenav-toggled #layoutSidenav #layoutSidenav_nav {
+            transform: translateX(-225px);
+        }
+
+        #layoutSidenav {
+            display: flex;
+        }
+
+        #layoutSidenav_nav {
+            flex-shrink: 0;
+            transition: transform 0.15s ease-in-out;
+            z-index: 1038;
+        }
+
+        #layoutSidenav_content {
+            flex-grow: 1;
+        }
+
+        .card-body .display-6 {
+            font-size: 2.5rem;
+        }
+
+        .card-body .text-white-50 {
+            opacity: 0.7;
+        }
+    </style>
 </head>
 <body class="sb-nav-fixed">
     <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
@@ -28,9 +55,9 @@ $username = $_SESSION['username'];
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                    <li><a class="dropdown-item" href="settings.php">Settings</a></li>
+                    <li><a class="dropdown-item" href="settings.php">ตั้งค่า</a></li>
                     <li><hr class="dropdown-divider" /></li>
-                    <li><a class="dropdown-item" href="logout.php">Logout</a></li>
+                    <li><a class="dropdown-item" href="logout.php">ออกจากระบบ</a></li>
                 </ul>
             </li>
         </ul>
@@ -40,28 +67,28 @@ $username = $_SESSION['username'];
             <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
                 <div class="sb-sidenav-menu">
                     <div class="nav">
-                        <div class="sb-sidenav-menu-heading">Core</div>
+                        <div class="sb-sidenav-menu-heading">หน้าหลัก</div>
                         <a class="nav-link active" href="dashboard.php">
                             <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                            Dashboard
+                            แดชบอร์ด
                         </a>
-                        <div class="sb-sidenav-menu-heading">Interface</div>
+                        <div class="sb-sidenav-menu-heading">เมนู</div>
                         <a class="nav-link" href="settings.php">
                             <div class="sb-nav-link-icon"><i class="fas fa-cogs"></i></div>
-                            Settings
+                            ตั้งค่า
                         </a>
                     </div>
                 </div>
                 <div class="sb-sidenav-footer">
-                    <div class="small">Logged in as:</div>
-                    <?php echo htmlspecialchars($username); ?>
+                    <div class="small">ล็อกอินในฐานะ:</div>
+                    <?php echo $username; ?>
                 </div>
             </nav>
         </div>
         <div id="layoutSidenav_content">
             <main>
                 <div class="container-fluid px-4">
-                    <h1 class="mt-4"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</h1>
+                    <h1 class="mt-4"><i class="fas fa-tachometer-alt me-2"></i>แดชบอร์ด</h1>
                     <ol class="breadcrumb mb-4">
                         <li class="breadcrumb-item active">ภาพรวมข้อมูลคุณภาพน้ำ</li>
                     </ol>
@@ -99,7 +126,7 @@ $username = $_SESSION['username'];
                                         <div class="me-3 display-4"><i class="fas fa-cloud"></i></div>
                                         <div>
                                             <div class="text-white-50 small">ความขุ่น</div>
-                                            <div class="display-6 fw-bold" id="turbidity">-NTU</div>
+                                            <div class="display-6 fw-bold" id="turbidity">- NTU</div>
                                         </div>
                                     </div>
                                 </div>
@@ -109,13 +136,13 @@ $username = $_SESSION['username'];
                     <div class="row">
                         <div class="col-lg-6 mb-4">
                             <div class="card shadow-lg border-0 h-100">
-                                <div class="card-header bg-dark text-white"><i class="fas fa-chart-area me-1"></i> อุณหภูมิย้อนหลัง</div>
+                                <div class="card-header bg-dark text-white"><i class="fas fa-chart-area me-1"></i> กราฟอุณหภูมิย้อนหลัง</div>
                                 <div class="card-body"><canvas id="temperatureChart"></canvas></div>
                             </div>
                         </div>
                         <div class="col-lg-6 mb-4">
                             <div class="card shadow-lg border-0 h-100">
-                                <div class="card-header bg-dark text-white"><i class="fas fa-chart-bar me-1"></i> ค่า pH ย้อนหลัง</div>
+                                <div class="card-header bg-dark text-white"><i class="fas fa-chart-bar me-1"></i> กราฟค่า pH ย้อนหลัง</div>
                                 <div class="card-body"><canvas id="phChart"></canvas></div>
                             </div>
                         </div>
@@ -123,7 +150,7 @@ $username = $_SESSION['username'];
                     <div class="row">
                         <div class="col-lg-12 mb-4">
                             <div class="card shadow-lg border-0 h-100">
-                                <div class="card-header bg-dark text-white"><i class="fas fa-chart-line me-1"></i> ความขุ่นย้อนหลัง</div>
+                                <div class="card-header bg-dark text-white"><i class="fas fa-chart-line me-1"></i> กราฟความขุ่นย้อนหลัง</div>
                                 <div class="card-body"><canvas id="turbidityChart"></canvas></div>
                             </div>
                         </div>
@@ -133,7 +160,7 @@ $username = $_SESSION['username'];
             <footer class="py-4 bg-light mt-auto">
                 <div class="container-fluid px-4">
                     <div class="d-flex align-items-center justify-content-between small">
-                        <div class="text-muted">Copyright &copy; Your Website 2024</div>
+                        <div class="text-muted">ลิขสิทธิ์ &copy; เว็บไซต์ของคุณ 2024</div>
                     </div>
                 </div>
             </footer>
@@ -143,7 +170,7 @@ $username = $_SESSION['username'];
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        // Set new default font family and font color to mimic Bootstrap's default styling
+        // กำหนด font-family และสีของตัวอักษรสำหรับ Chart.js
         Chart.defaults.font.family = '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
         Chart.defaults.color = '#fff';
 
@@ -173,13 +200,16 @@ $username = $_SESSION['username'];
         };
 
         const createChart = (ctx, label, color, historicalData, dataKey) => {
+            const labels = historicalData.map(item => new Date(item.timestamp).toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }));
+            const data = historicalData.map(item => item[dataKey]);
+
             return new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: historicalData.map(item => new Date(item.timestamp).toLocaleTimeString()),
+                    labels: labels,
                     datasets: [{
                         label: label,
-                        data: historicalData.map(item => item[dataKey]),
+                        data: data,
                         backgroundColor: createGradient(ctx, color),
                         borderColor: color,
                         pointRadius: 3,
@@ -206,7 +236,7 @@ $username = $_SESSION['username'];
                 if (data.status === 'success' && data.data) {
                     document.getElementById('temperature').textContent = `${parseFloat(data.data.temperature).toFixed(1)}°C`;
                     document.getElementById('ph_value').textContent = parseFloat(data.data.ph_value).toFixed(2);
-                    document.getElementById('turbidity').textContent = `${parseFloat(data.data.turbidity).toFixed(2)}NTU`;
+                    document.getElementById('turbidity').textContent = `${parseFloat(data.data.turbidity).toFixed(2)} NTU`;
                 }
             } catch (error) {
                 console.error('Error fetching latest data:', error);
