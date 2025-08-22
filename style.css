@@ -127,4 +127,41 @@ h1, h2, h3, h4, h5, h6, .display-6 {
 /* Other general styles */
 .breadcrumb-item.active {
     color: var(--dark-secondary-text);
+
+}
+@media (max-width: 991.98px) {
+    #layoutSidenav {
+        flex-direction: column;
+    }
+
+    #layoutSidenav_nav {
+        transform: translateX(0) !important; /* ป้องกันการซ่อน sidebar บนมือถือ */
+        width: 100%;
+        position: relative;
+        z-index: 1037;
+    }
+
+    #layoutSidenav_content {
+        margin-top: 0;
+    }
+}
+
+main {
+    padding-bottom: 2rem; /* เพิ่มช่องว่างด้านล่างของเนื้อหาหลัก */
+}
+
+/* เพิ่มการตกแต่งให้ปุ่ม dropdown ใน navbar */
+.navbar-nav .dropdown-menu {
+    background-color: var(--dark-card);
+    border: 1px solid var(--dark-card-border);
+}
+
+.navbar-nav .dropdown-item {
+    color: var(--dark-text);
+}
+
+.navbar-nav .dropdown-item:hover,
+.navbar-nav .dropdown-item:focus {
+    background-color: var(--primary-blue-light);
+    color: #fff;
 }
