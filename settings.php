@@ -140,7 +140,7 @@ try {
         <footer class="py-4 bg-light mt-auto">
             <div class="container-fluid px-4">
                 <div class="d-flex align-items-center justify-content-between small">
-                    <div class="text-muted">ลิขสิทธิ์ &copy; เว็บไซต์ของคุณ 2024</div>
+                    <div class="text-muted">ลิขสิทธิ์ &copy; FishTank_Moniter Real-time 2025</div>
                 </div>
             </div>
         </footer>
@@ -183,3 +183,4 @@ try {
     </script>
 </body>
 </html>
+
